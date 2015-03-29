@@ -83,18 +83,16 @@ namespace sharpadventure
 						}
 					}
 					if(matches.Count == 0)
-						EpicWriteLine("I have no idea what you mean by $({0}).", target);
+						EpicWriteLine("There is no room that can be identified by '$({0}').", target);
 					else if(matches.Count == 1)
-						gameState.CurrentRoom = gameState.Rooms[matches[0]];
+						GoRoom(matches[0]);
 					else
 					{
 						int choice = ChooseOne(longNames);
 						if(choice < 0)
 							return;
-						gameState.CurrentRoom = gameState.Rooms[matches[choice]];
+						GoRoom(matches[choice]);
 					}
-					reactorFixtures = ConstructRoomCommands(gameState.CurrentRoom);
-					EpicWriteLine ("You are in {0}.", gameState.CurrentRoom.Name);
 				}
 			});
 		}
@@ -102,8 +100,7 @@ namespace sharpadventure
 		public void Run(GameState state)
 		{
 			gameState = state;
-			reactorFixtures = ConstructRoomCommands(gameState.CurrentRoom);
-			EpicWriteLine ("You are in {0}.", gameState.CurrentRoom.Name);
+			GoRoom (gameState.CurrentRoom.ShortName);
 			EpicWriteLine ("Obviously, if you need help at any time, type '!HELP' and press [RETURN].");
 
 			do
@@ -120,7 +117,7 @@ namespace sharpadventure
 				string commandKeyword = GetBestCommand(splitLine[0].ToUpper());
 
 				if(PredefinedCommands.ContainsKey(commandKeyword))
-					PredefinedCommands[splitLine[0].ToUpper()](gameState, splitLine);
+					PredefinedCommands[commandKeyword](gameState, splitLine);
 				else if(reactorFixtures.ContainsKey(commandKeyword))
 				{
 					if(splitLine.Length == 1)
@@ -131,12 +128,13 @@ namespace sharpadventure
 
 					List<Fixture> fixList = reactorFixtures[commandKeyword];
 					// Get the name of the first argument, aka the target
+					// TODO : multiword targets
 					string targetName = splitLine[1];
 
 					// fixture doesn't exist in the room
 					if(gameState.CurrentRoom.GetFixture(targetName) == null)
 					{
-						EpicWriteLine("You feel like a dunce, realizing you can't find the #" + targetName + " in the room.");
+						EpicWriteLine("You feel like a dunce, realizing you can't find the #(" + targetName + ") in the room.");
 						continue;
 					}
 
@@ -229,6 +227,13 @@ namespace sharpadventure
 				}
 			} while((choice = items.FindIndex(x => x.Contains(response))) == -1);
 			return choice;
+		}
+
+		private void GoRoom(string shortName)
+		{
+			gameState.CurrentRoom = gameState.Rooms [shortName];
+			reactorFixtures = ConstructRoomCommands(gameState.CurrentRoom);
+			EpicWriteLine ("You are in {0}.", gameState.CurrentRoom.Name);
 		}
 
 		private void PrintExits()
