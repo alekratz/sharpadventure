@@ -42,7 +42,10 @@ namespace sharpadventure
 				(state, arg) =>
 			{
 				if(arg.Length == 1)
+				{
 					Console.WriteLine(StringUtil.Colorize(state.CurrentRoom.Description));
+					PrintExits();
+				}
 				else
 				{
 					Fixture fix = state.CurrentRoom.GetFixture(arg[1]);
@@ -50,6 +53,27 @@ namespace sharpadventure
 						Console.WriteLine("You strain your eyes looking for the {0} in the room, but it doesn't seem to exist.", arg[1]);
 					else
 						Console.WriteLine(StringUtil.Colorize(fix.Description));
+				}
+			});
+			PredefinedCommands.Add("GO",
+				(state, arg) =>
+			{
+				if(arg.Length == 1)
+				{
+					Console.WriteLine("Where would you like to go?");
+					PrintExits();
+				}
+				else
+				{
+					string target = String.Join(" ", arg, 1, arg.Length - 1).ToLower();
+					// otherwise, make the string and check it against all exit names, and find which one the user meant
+					HashSet<string> matches = new HashSet<string>();
+					foreach(string shortName in gameState.CurrentRoom.Exits)
+					{
+						if(gameState.Rooms[shortName].Name.ToLower().Contains(target))
+							matches.Add(shortName);
+					}
+					Console.WriteLine("{0} {1}", matches.Count, (matches.Count == 1) ? "match" : "matches");
 				}
 			});
 		}
@@ -157,11 +181,18 @@ namespace sharpadventure
 				if (command == commandKeyword)
 					return commandKeyword;
 				var syns = kvp.Value;
-				foreach(var s in syns) Console.WriteLine (s);
 				if (syns.Contains (commandKeyword))
 					return command;
 			}
 			return commandKeyword;
+		}
+
+		private void PrintExits()
+		{
+			int index = 1;
+			Console.WriteLine ("Exits:");
+			foreach(string shortName in gameState.CurrentRoom.Exits)
+				Console.WriteLine ("{0}) {1}", index++, gameState.Rooms [shortName].Name);
 		}
 
 		static string GetLine()
