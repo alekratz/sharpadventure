@@ -11,6 +11,8 @@ namespace sharpadventure
 	{
 		public Dictionary<string, PredefinedCommand> PredefinedCommands { get; private set; }
 
+		private GameState gameState;
+
 		public Game ()
 		{
 			PredefinedCommands = new Dictionary<string, PredefinedCommand> ();
@@ -54,9 +56,9 @@ namespace sharpadventure
 
 		public void Run(GameState state)
 		{
-			Dictionary<string, List<Fixture>> reactorFixtures = ConstructRoomCommands(state.CurrentRoom);
-
-			Console.WriteLine ("You find yourself in {0}. What do you do?", state.CurrentRoom.Name);
+			gameState = state;
+			Dictionary<string, List<Fixture>> reactorFixtures = ConstructRoomCommands(gameState.CurrentRoom);
+			Console.WriteLine ("You find yourself in {0}. What do you do?", gameState.CurrentRoom.Name);
 			Console.WriteLine (StringUtil.Colorize("Obviously, if you need help at any time, type '!HELP' and press [RETURN]."));
 
 			do
@@ -65,9 +67,11 @@ namespace sharpadventure
 				if(line.Length == 0)
 					continue;
 				string[] splitLine = line.Split(' ');
-				string commandKeyword = splitLine[0].ToUpper();
+				// go through synonyms that are available
+				string commandKeyword = GetBestCommand(splitLine[0].ToUpper());
+
 				if(PredefinedCommands.ContainsKey(commandKeyword))
-					PredefinedCommands[splitLine[0].ToUpper()](state, splitLine);
+					PredefinedCommands[splitLine[0].ToUpper()](gameState, splitLine);
 				else if(reactorFixtures.ContainsKey(commandKeyword))
 				{
 					if(splitLine.Length == 1)
@@ -81,7 +85,7 @@ namespace sharpadventure
 					string targetName = splitLine[1];
 
 					// fixture doesn't exist in the room
-					if(state.CurrentRoom.GetFixture(targetName) == null)
+					if(gameState.CurrentRoom.GetFixture(targetName) == null)
 					{
 						Console.WriteLine(StringUtil.Colorize("You feel like a dunce, realizing you can't find the #" + targetName + " in the room."));
 						continue;
@@ -98,7 +102,7 @@ namespace sharpadventure
 					}
 					// Make sure that the reactor isn't null
 					LuaFunction reactor = target.Reactors[commandKeyword];
-					Debug.Assert(reactor != null, "Could not find a reactor associated with " + target.Name + " in room " + state.CurrentRoom.ShortName);
+					Debug.Assert(reactor != null, "Could not find a reactor associated with " + target.Name + " in room " + gameState.CurrentRoom.ShortName);
 					/*
 					if(reactor == null)
 					{
@@ -108,17 +112,17 @@ namespace sharpadventure
 					*/
 					try
 					{
-						reactor.Call(state, target, splitLine);
+						reactor.Call(gameState, target, splitLine);
 					}
 					catch(NLua.Exceptions.LuaScriptException ex)
 					{
-						Console.WriteLine("ERROR in room {0}: {1}", state.CurrentRoom.ShortName, ex.Message);
+						Console.WriteLine("ERROR in room {0}: {1}", gameState.CurrentRoom.ShortName, ex.Message);
 					}
 				}
 				else
 					Console.WriteLine("Command not found.");
 
-			} while(state.Running);
+			} while(gameState.Running);
 		}
 
 		/// <summary>
@@ -142,6 +146,22 @@ namespace sharpadventure
 				}
 			}
 			return commands;
+		}
+
+		private string GetBestCommand(string commandKeyword)
+		{
+			// go through each entry in the vocabulary, and check if it's a part of that
+			foreach(KeyValuePair<string, HashSet<string>> kvp in gameState.Synonyms)
+			{
+				var command = kvp.Key;
+				if (command == commandKeyword)
+					return commandKeyword;
+				var syns = kvp.Value;
+				foreach(var s in syns) Console.WriteLine (s);
+				if (syns.Contains (commandKeyword))
+					return command;
+			}
+			return commandKeyword;
 		}
 
 		static string GetLine()
