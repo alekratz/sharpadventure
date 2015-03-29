@@ -8,7 +8,9 @@ namespace sharpadventure
 {
 	public class GameState
 	{
+		public HashSet<string> NegativeWords { get; private set; }
 		public Dictionary<string, HashSet<string>> Synonyms { get; private set; }
+
 		public Dictionary<string, Room> Rooms { get; set; }
 		public Room CurrentRoom { get; set; }
 		public bool Running { get; set; }
@@ -21,6 +23,7 @@ namespace sharpadventure
 		public GameState(string resourceDirectory)
 		{
 			Running = true;
+			NegativeWords = new HashSet<string> ();
 			Synonyms = new Dictionary<string, HashSet<string>> ();
 			Rooms = new Dictionary<string, Room> ();
 			CurrentRoom = null;
@@ -64,6 +67,14 @@ namespace sharpadventure
 
 						Synonyms.Add (command, synonyms);
 					}
+				}
+
+				if (vocabState ["negative"] as LuaTable == null)
+					Console.WriteLine ("WARNING: Negative table not found in vocab.lua.");
+				else
+				{
+					foreach(KeyValuePair<object, object> negPair in vocabState["negative"] as LuaTable)
+						NegativeWords.Add (negPair.Value as string);
 				}
 			}
 

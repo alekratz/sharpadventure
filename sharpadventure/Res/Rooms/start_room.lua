@@ -3,7 +3,7 @@
 name = "A small room"
 shortname = "small_room"
 description = "This room is very small. There are some #cabinets on the wall."
-exits = { "small_closet" }
+exits = { "small_closet", "large_closet" }
 start = true
 
 fixtures = {

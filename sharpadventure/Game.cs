@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
 using NLua;
@@ -48,7 +49,8 @@ namespace sharpadventure
 				}
 				else
 				{
-					Fixture fix = state.CurrentRoom.GetFixture(arg[1]);
+					// TODO : hash search for the items
+					Fixture fix = state.CurrentRoom.GetFixture(string.Join(" ", arg[1]));
 					if(fix == null)
 						Console.WriteLine("You strain your eyes looking for the {0} in the room, but it doesn't seem to exist.", arg[1]);
 					else
@@ -67,13 +69,28 @@ namespace sharpadventure
 				{
 					string target = String.Join(" ", arg, 1, arg.Length - 1).ToLower();
 					// otherwise, make the string and check it against all exit names, and find which one the user meant
-					HashSet<string> matches = new HashSet<string>();
+					List<string> matches = new List<string>();
+					List<string> longNames = new List<string>();
 					foreach(string shortName in gameState.CurrentRoom.Exits)
 					{
 						if(gameState.Rooms[shortName].Name.ToLower().Contains(target))
+						{
 							matches.Add(shortName);
+							longNames.Add(gameState.Rooms[shortName].Name);
+						}
 					}
-					Console.WriteLine("{0} {1}", matches.Count, (matches.Count == 1) ? "match" : "matches");
+					if(matches.Count == 0)
+						Console.WriteLine(StringUtil.Colorize("I have no idea what you mean by $({0})."), target);
+					else if(matches.Count == 1)
+						gameState.CurrentRoom = gameState.Rooms[matches[0]];
+					else
+					{
+						int choice = ChooseOne(longNames);
+						if(choice < 0)
+							return;
+						gameState.CurrentRoom = gameState.Rooms[matches[choice]];
+					}
+					Console.WriteLine ("You are in {0}.", gameState.CurrentRoom.Name);
 				}
 			});
 		}
@@ -82,14 +99,18 @@ namespace sharpadventure
 		{
 			gameState = state;
 			Dictionary<string, List<Fixture>> reactorFixtures = ConstructRoomCommands(gameState.CurrentRoom);
-			Console.WriteLine ("You find yourself in {0}. What do you do?", gameState.CurrentRoom.Name);
+			Console.WriteLine ("You are in {0}.", gameState.CurrentRoom.Name);
 			Console.WriteLine (StringUtil.Colorize("Obviously, if you need help at any time, type '!HELP' and press [RETURN]."));
 
 			do
 			{
-				string line = GetLine();
-				if(line.Length == 0)
-					continue;
+				Console.WriteLine ("What do you do?", gameState.CurrentRoom.Name);
+				string line;
+				do
+				{
+					line = GetLine();
+				} while (line.Length == 0);
+
 				string[] splitLine = line.Split(' ');
 				// go through synonyms that are available
 				string commandKeyword = GetBestCommand(splitLine[0].ToUpper());
@@ -187,12 +208,31 @@ namespace sharpadventure
 			return commandKeyword;
 		}
 
+		private int ChooseOne(List<string> items)
+		{
+			string response;
+			int choice;
+			do
+			{
+				Console.WriteLine ("Which of these did you mean? (negative response to cancel)");
+				foreach(string item in items)
+					Console.WriteLine ("  {0}", item);
+				response = GetLine();
+				if(gameState.NegativeWords.Contains(response))
+				{
+					Console.WriteLine("{0} to you, too.", response);
+					return -1;
+				}
+			} while((choice = items.FindIndex(x => x.Contains(response))) == -1);
+			return choice;
+		}
+
 		private void PrintExits()
 		{
 			int index = 1;
 			Console.WriteLine ("Exits:");
 			foreach(string shortName in gameState.CurrentRoom.Exits)
-				Console.WriteLine ("{0}) {1}", index++, gameState.Rooms [shortName].Name);
+				Console.WriteLine (StringUtil.Colorize("{0}) $({1})"), index++, gameState.Rooms [shortName].Name);
 		}
 
 		static string GetLine()

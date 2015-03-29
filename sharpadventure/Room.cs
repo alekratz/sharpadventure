@@ -28,7 +28,7 @@ namespace sharpadventure
 
 		public Fixture GetFixture(string fixtureName)
 		{
-			return Fixtures.First ((fixture) => (fixture.Name == fixtureName));
+			return Fixtures.FirstOrDefault ((fixture) => (fixture.Name == fixtureName));
 		}
 
 		public override string ToString ()

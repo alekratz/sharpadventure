@@ -6,3 +6,9 @@ synonyms = {
 	TAKE = { "GET", "GRAB" },
 	BASH = { "BREAK", "FORCE", "SMASH", "DESTROY" }
 }
+
+negative = {
+	"jk",
+	"cancel",
+	"nevermind"
+}
