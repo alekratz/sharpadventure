@@ -26,7 +26,7 @@ fixtures = {
 			OPEN = open_reactor,
 			CLOSE = close_reactor,
 			UNLOCK = unlock_reactor,
-			BASH = function(state, owner, args) print("These cabinets are not suitable for bashing. Trust me. ") end
+			BASH = function(state, owner, args) print("These cabinets are not suitable for destroying. Trust me.") end
 		}
 	}
 }
