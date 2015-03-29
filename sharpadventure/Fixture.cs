@@ -11,6 +11,7 @@ namespace sharpadventure
 		public string Name { get; set; }
 		public string State { get; set; }
 		public string StateVerb { get; set; }
+		public bool Stuck { get; set; }
 		public string Description
 		{ 
 			get { return (description == "") ? States [State] : description; }
@@ -37,6 +38,7 @@ namespace sharpadventure
 			if (table ["description"] as string != null)
 				fixture.Description = table ["description"] as string;
 			fixture.StateVerb = (table ["state_verb"] as string != null) ? table ["state_verb"] as string : "is";
+			fixture.Stuck = (table ["stuck"] != null) ? (bool)table ["stuck"] : true; // by default, a fixture is "stuck", e.g., it cannot be removed from the room.
 			if (table ["state"] as string != null)
 				fixture.State = table ["state"] as string;
 			if(table["states"] as LuaTable != null)

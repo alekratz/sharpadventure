@@ -252,28 +252,7 @@ namespace sharpadventure
 
 		private static void EpicWriteLine(String text, params object[] args)
 		{
-			text = String.Format (text, args);
-			text = StringUtil.Colorize (text);
-			String[] words = text.Split(' ');
-			StringBuilder buffer = new StringBuilder();
-
-			foreach (String word in words)
-			{
-				buffer.Append(word);
-
-				if (buffer.Length >= Console.BufferWidth)
-				{
-					String line = buffer.ToString().Substring(0, buffer.Length - word.Length);
-					Console.WriteLine(line);
-					buffer.Clear();
-					buffer.Append(word);
-				}
-
-				buffer.Append(" ");
-
-			}
-
-			Console.WriteLine(buffer.ToString());
+			StringUtil.EpicWriteLine (text, args);
 		}
 	}
 }

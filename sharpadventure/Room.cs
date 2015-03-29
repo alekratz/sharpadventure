@@ -53,6 +53,7 @@ namespace sharpadventure
 			Lua state = new Lua ();
 			// add the path to the "standard" functions to the package path search
 			state["package.path"] += ";" + resourceDirectory + "/?.lua";
+			state ["util"] = LuaUtil.Instance;
 			//state.DoString ("print(package.path)");
 			//state.DoString ("os.execute('pwd')");
 			state.DoFile (path);

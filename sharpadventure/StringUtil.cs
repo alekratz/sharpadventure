@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -42,6 +43,32 @@ namespace sharpadventure
 			output = Regex.Replace (output, @"#\((.+)\)|#([^\s]+)", GREEN + "$1$2" + NORM);
 			output = Regex.Replace (output, @"\$\((.+)\)|\$([^\s]+)", MAGENTA + "$1$2" + NORM);
 			return output;
+		}
+
+		public static void EpicWriteLine(String text, params object[] args)
+		{
+			text = String.Format (text, args);
+			text = StringUtil.Colorize (text);
+			String[] words = text.Split(' ');
+			StringBuilder buffer = new StringBuilder();
+
+			foreach (String word in words)
+			{
+				buffer.Append(word);
+
+				if (buffer.Length >= Console.BufferWidth)
+				{
+					String line = buffer.ToString().Substring(0, buffer.Length - word.Length);
+					Console.WriteLine(line);
+					buffer.Clear();
+					buffer.Append(word);
+				}
+
+				buffer.Append(" ");
+
+			}
+
+			Console.WriteLine(buffer.ToString());
 		}
 	}
 }

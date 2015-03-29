@@ -1,3 +1,4 @@
+-- reactors.lua
 -- Reactors are lua functions that take three arguments: the game state, the owner, and the command line arguments.
 
 -- open_reactor
@@ -7,11 +8,11 @@
 function open_reactor(state, owner, args)
   -- Check owner state
   if owner.State == "locked" then
-    print("The " .. owner.Name .. " " .. owner.StateVerb .. " locked.")
+    util:Printc("The #(" .. owner.Name .. ") " .. owner.StateVerb .. " locked.")
   elseif owner.State == "open" then
-    print("You feel like a dunce, as the " .. owner.Name .. " " .. owner.StateVerb .. " already open.")
+    util:Printc("You feel like a dunce, as the #(" .. owner.Name .. ") " .. owner.StateVerb .. " already open.")
   elseif owner.State == "closed" then
-    print("You open the " .. owner.Name)
+    util:Printc("You open the #(" .. owner.Name .. ")")
     owner.State = "open"
   end
 end
@@ -19,17 +20,17 @@ end
 function unlock_reactor(state, owner, args)
   if owner.State == "locked" then
     --print("The " .. owner.Name .. " " .. owner.StateVerb .. " locked. You need to find the proper key.")
-    print("You manage to unlock the " .. owner.Name .. ". Somehow.")
+    util:Printc("You manage to unlock the #(" .. owner.Name .. "). Somehow.")
     owner.State = "closed"
   elseif owner.State == "open" then
-    print("You feel like a dunce, as the " .. owner.Name .. " " .. owner.StateVerb .. " already unlocked and wide open.")
+    util:Printc("You feel like a dunce, as the #(" .. owner.Name .. ") " .. owner.StateVerb .. " already unlocked and wide open.")
   elseif owner.State == "closed" then
-    print("You feel like a dunce, as the " .. owner.Name .. " " .. owner.StateVerb .. " already unlocked.")
+    util:Printc("You feel like a dunce, as the #(" .. owner.Name .. ") " .. owner.StateVerb .. " already unlocked.")
   end
 end
 
 function close_reactor(state, owner, args)
-  print("You attempt to close the " .. owner.Name .. " to no avail.")
+  util:Printc("You attempt to close the #(" .. owner.Name .. ") to no avail.")
 end
 
 -- This is not a reactor, it is a reactor template. You pass in arguments, and it will create a reactor
@@ -37,6 +38,6 @@ end
 function take_reactor_template(take_string)
   return function(state, owner, args)
   	-- TODO : take the thing out of the got dang room
-  	print(take_string)
+  	util:Printc(take_string)
   end
 end
