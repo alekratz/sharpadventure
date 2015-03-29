@@ -31,3 +31,12 @@ end
 function close_reactor(state, owner, args)
   print("You attempt to close the " .. owner.Name .. " to no avail.")
 end
+
+-- This is not a reactor, it is a reactor template. You pass in arguments, and it will create a reactor
+-- whose behavior is based on those arguments.
+function take_reactor_template(take_string)
+  return function(state, owner, args)
+  	-- TODO : take the thing out of the got dang room
+  	print(take_string)
+  end
+end

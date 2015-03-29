@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,6 +14,7 @@ namespace sharpadventure
 		public Dictionary<string, PredefinedCommand> PredefinedCommands { get; private set; }
 
 		private GameState gameState;
+		private Dictionary<string, List<Fixture>> reactorFixtures;
 
 		public Game ()
 		{
@@ -21,18 +23,19 @@ namespace sharpadventure
 			PredefinedCommands.Add ("HELP", 
 				(state, arg) =>
 			{
-				Console.WriteLine("Available commands:");
+				EpicWriteLine("In every room, you have the following commands available to you:");
 				foreach(KeyValuePair<string, PredefinedCommand> kvp in PredefinedCommands)
-					Console.WriteLine(StringUtil.Colorize("  >> !{0}"), kvp.Key);
-				Console.WriteLine("You may also interact with the world around you. Look for colorized names in the rooms, and do things to them.");
-				Console.WriteLine(StringUtil.Colorize(@"
+					EpicWriteLine("  >> !{0}", kvp.Key);
+				EpicWriteLine("You may also interact with the world around you. Look for colorized names in the rooms, and do things to them.");
+				EpicWriteLine(@"
   Red is a reference to a !command
   Blue is a reference to a @person
   Green is a reference to a #thing
   Magenta is a reference to a $place
-				"));
-				Console.WriteLine(StringUtil.Colorize("For example, if you found some #doors, you would open them by typing"));
-				Console.WriteLine(StringUtil.Colorize(" >> !OPEN #doors"));
+				");
+				EpicWriteLine("For example, if you found some #doors, you would open them by typing");
+				EpicWriteLine(" >> !OPEN #doors");
+				EpicWriteLine("Or, if you ran into a locked #chest, you could either try your luck to !pick the lock, or just !bash it open.");
 			});
 			PredefinedCommands.Add("EXIT",
 				(state, arg) =>
@@ -44,7 +47,7 @@ namespace sharpadventure
 			{
 				if(arg.Length == 1)
 				{
-					Console.WriteLine(StringUtil.Colorize(state.CurrentRoom.Description));
+					EpicWriteLine(state.CurrentRoom.Description);
 					PrintExits();
 				}
 				else
@@ -52,9 +55,9 @@ namespace sharpadventure
 					// TODO : hash search for the items
 					Fixture fix = state.CurrentRoom.GetFixture(string.Join(" ", arg[1]));
 					if(fix == null)
-						Console.WriteLine("You strain your eyes looking for the {0} in the room, but it doesn't seem to exist.", arg[1]);
+						EpicWriteLine("You strain your eyes looking for the {0} in the room, but it doesn't seem to exist.", arg[1]);
 					else
-						Console.WriteLine(StringUtil.Colorize(fix.Description));
+						EpicWriteLine(fix.Description);
 				}
 			});
 			PredefinedCommands.Add("GO",
@@ -62,7 +65,7 @@ namespace sharpadventure
 			{
 				if(arg.Length == 1)
 				{
-					Console.WriteLine("Where would you like to go?");
+					EpicWriteLine("Where would you like to go?");
 					PrintExits();
 				}
 				else
@@ -80,7 +83,7 @@ namespace sharpadventure
 						}
 					}
 					if(matches.Count == 0)
-						Console.WriteLine(StringUtil.Colorize("I have no idea what you mean by $({0})."), target);
+						EpicWriteLine("I have no idea what you mean by $({0}).", target);
 					else if(matches.Count == 1)
 						gameState.CurrentRoom = gameState.Rooms[matches[0]];
 					else
@@ -90,7 +93,8 @@ namespace sharpadventure
 							return;
 						gameState.CurrentRoom = gameState.Rooms[matches[choice]];
 					}
-					Console.WriteLine ("You are in {0}.", gameState.CurrentRoom.Name);
+					reactorFixtures = ConstructRoomCommands(gameState.CurrentRoom);
+					EpicWriteLine ("You are in {0}.", gameState.CurrentRoom.Name);
 				}
 			});
 		}
@@ -98,13 +102,13 @@ namespace sharpadventure
 		public void Run(GameState state)
 		{
 			gameState = state;
-			Dictionary<string, List<Fixture>> reactorFixtures = ConstructRoomCommands(gameState.CurrentRoom);
-			Console.WriteLine ("You are in {0}.", gameState.CurrentRoom.Name);
-			Console.WriteLine (StringUtil.Colorize("Obviously, if you need help at any time, type '!HELP' and press [RETURN]."));
+			reactorFixtures = ConstructRoomCommands(gameState.CurrentRoom);
+			EpicWriteLine ("You are in {0}.", gameState.CurrentRoom.Name);
+			EpicWriteLine ("Obviously, if you need help at any time, type '!HELP' and press [RETURN].");
 
 			do
 			{
-				Console.WriteLine ("What do you do?", gameState.CurrentRoom.Name);
+				EpicWriteLine ("What do you do?", gameState.CurrentRoom.Name);
 				string line;
 				do
 				{
@@ -121,7 +125,7 @@ namespace sharpadventure
 				{
 					if(splitLine.Length == 1)
 					{
-						Console.WriteLine(StringUtil.Colorize("What do you wish to !" + commandKeyword + "?"));
+						EpicWriteLine("What do you wish to !" + commandKeyword + "?");
 						continue;
 					}
 
@@ -132,7 +136,7 @@ namespace sharpadventure
 					// fixture doesn't exist in the room
 					if(gameState.CurrentRoom.GetFixture(targetName) == null)
 					{
-						Console.WriteLine(StringUtil.Colorize("You feel like a dunce, realizing you can't find the #" + targetName + " in the room."));
+						EpicWriteLine("You feel like a dunce, realizing you can't find the #" + targetName + " in the room.");
 						continue;
 					}
 
@@ -142,7 +146,7 @@ namespace sharpadventure
 					// Fixture doesn't have the given action associated with it
 					if(target == null)
 					{
-						Console.WriteLine("You can't !" + commandKeyword + " the #" + target.Name);
+						EpicWriteLine("You can't !" + commandKeyword + " the #" + target.Name);
 						continue;
 					}
 					// Make sure that the reactor isn't null
@@ -151,7 +155,7 @@ namespace sharpadventure
 					/*
 					if(reactor == null)
 					{
-						Console.WriteLine("You can't !" + commandKeyword + " the #" + target.Name);
+						EpicWriteLine("You can't !" + commandKeyword + " the #" + target.Name);
 						continue;
 					}
 					*/
@@ -161,11 +165,11 @@ namespace sharpadventure
 					}
 					catch(NLua.Exceptions.LuaScriptException ex)
 					{
-						Console.WriteLine("ERROR in room {0}: {1}", gameState.CurrentRoom.ShortName, ex.Message);
+						EpicWriteLine("ERROR in room {0}: {1}", gameState.CurrentRoom.ShortName, ex.Message);
 					}
 				}
 				else
-					Console.WriteLine("Command not found.");
+					EpicWriteLine("Command not found.");
 
 			} while(gameState.Running);
 		}
@@ -214,13 +218,13 @@ namespace sharpadventure
 			int choice;
 			do
 			{
-				Console.WriteLine ("Which of these did you mean? (negative response to cancel)");
+				EpicWriteLine ("Which of these did you mean? (negative response to cancel)");
 				foreach(string item in items)
-					Console.WriteLine ("  {0}", item);
+					EpicWriteLine ("  {0}", item);
 				response = GetLine();
 				if(gameState.NegativeWords.Contains(response))
 				{
-					Console.WriteLine("{0} to you, too.", response);
+					EpicWriteLine("{0} to you, too.", response);
 					return -1;
 				}
 			} while((choice = items.FindIndex(x => x.Contains(response))) == -1);
@@ -230,15 +234,41 @@ namespace sharpadventure
 		private void PrintExits()
 		{
 			int index = 1;
-			Console.WriteLine ("Exits:");
+			EpicWriteLine ("Exits:");
 			foreach(string shortName in gameState.CurrentRoom.Exits)
-				Console.WriteLine (StringUtil.Colorize("{0}) $({1})"), index++, gameState.Rooms [shortName].Name);
+				EpicWriteLine ("{0}) $({1})", index++, gameState.Rooms [shortName].Name);
 		}
 
-		static string GetLine()
+		private static string GetLine()
 		{
 			Console.Write (StringUtil.Colorize(" !>> "));
 			return Console.ReadLine ();
+		}
+
+		private static void EpicWriteLine(String text, params object[] args)
+		{
+			text = String.Format (text, args);
+			text = StringUtil.Colorize (text);
+			String[] words = text.Split(' ');
+			StringBuilder buffer = new StringBuilder();
+
+			foreach (String word in words)
+			{
+				buffer.Append(word);
+
+				if (buffer.Length >= Console.BufferWidth)
+				{
+					String line = buffer.ToString().Substring(0, buffer.Length - word.Length);
+					Console.WriteLine(line);
+					buffer.Clear();
+					buffer.Append(word);
+				}
+
+				buffer.Append(" ");
+
+			}
+
+			Console.WriteLine(buffer.ToString());
 		}
 	}
 }
