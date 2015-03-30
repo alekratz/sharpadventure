@@ -101,7 +101,7 @@ namespace sharpadventure
 		{
 			gameState = state;
 			GoRoom (gameState.CurrentRoom.ShortName);
-			EpicWriteLine ("Obviously, if you need help at any time, type '!HELP' and press [RETURN].");
+			EpicWriteLine ("Obviously, if you need help at any time, type '!(HELP)' and press [RETURN].");
 
 			do
 			{
@@ -249,7 +249,7 @@ namespace sharpadventure
 
 		private static string GetLine()
 		{
-			Console.Write (StringUtil.Colorize(" !>> "));
+			StringUtil.WriteColor(" !>> ");
 			return Console.ReadLine ();
 		}
 

@@ -107,6 +107,7 @@ namespace sharpadventure
 				Console.WriteLine ("Usage: sharpadventure resource-directory [ resource-directory . . . ]");
 				Environment.Exit (0);
 			}
+			Console.ForegroundColor = StringUtil.DEFAULT_COLOR;
 
 			string resourceDirectory = args [0];
 
@@ -116,22 +117,27 @@ namespace sharpadventure
 				Environment.Exit (1);
 			}
 
+			#if DEBUG
+			GameState gameState = new GameState(resourceDirectory);
+			#else
 			GameState gameState = null;
-			//try
+			try
 			{
 				gameState = new GameState(resourceDirectory);
 			}
-			/*catch(Exception ex)
+			catch(Exception ex)
 			{
 				Console.Error.WriteLine (ex.StackTrace);
 				Console.Error.WriteLine ("Error: {0}", ex.Message);
 				Environment.Exit (1);
-			}*/
+			}
+			#endif
 
 			Game game = new Game ();
 			game.Run (gameState);
 
 			Console.WriteLine ("Quitter.");
+			Console.ResetColor ();
 		}
 	}
 }

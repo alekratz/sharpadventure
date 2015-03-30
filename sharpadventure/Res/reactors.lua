@@ -41,3 +41,9 @@ function take_reactor_template(take_string)
   	util:Printc(take_string)
   end
 end
+
+function bash_reactor_template(bash_string)
+  return function(state, owner, args)
+  	util:Printc(bash_string)
+  end
+end

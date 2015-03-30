@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -7,7 +8,7 @@ namespace sharpadventure
 {
 	public static class StringUtil
 	{
-
+		/*
 		public const string NORM    = "\x1b[0m";
 
 		public const string BLACK   = "\x1b[30m";
@@ -30,13 +31,6 @@ namespace sharpadventure
 
 		public static string Colorize(string input)
 		{
-			/*
-		 	 * ! is a reference to a command (red)
-			 * @ is a reference to a person (blue)
-			 * # is a reference to a thing (green)
-			 * $ is a reference to a place (magenta)
-			 * http://en.wikipedia.org/wiki/ANSI_escape_code#graphics for color reference
-			 */
 			string output = input;
 			output = Regex.Replace (output, @"!\((.+)\)|!([^\s]+)", RED + "$1$2" + NORM);
 			output = Regex.Replace (output, @"@\((.+)\)|@([^\s]+)", BLUE + "$1$2" + NORM);
@@ -44,11 +38,77 @@ namespace sharpadventure
 			output = Regex.Replace (output, @"\$\((.+)\)|\$([^\s]+)", MAGENTA + "$1$2" + NORM);
 			return output;
 		}
+		*/
+
+		public const ConsoleColor DEFAULT_COLOR = ConsoleColor.White;
+
+		public static void WriteColor(string text)
+		{
+			/*
+		 	 * ! is a reference to a command (red)
+			 * @ is a reference to a person (blue)
+			 * # is a reference to a thing (green)
+			 * $ is a reference to a place (magenta)
+			 * http://en.wikipedia.org/wiki/ANSI_escape_code#graphics for color reference
+			 */
+			Dictionary<char, ConsoleColor> colors = new Dictionary<char, ConsoleColor> {
+				{ '!', ConsoleColor.Red },
+				{ '@', ConsoleColor.Blue },
+				{ '#', ConsoleColor.Green },
+				{ '$', ConsoleColor.Magenta }
+			};
+			// TODO: word wrap, backslash escapes
+			string chunk = "";
+			bool paren = false;
+			for (int i = 0; i < text.Length; i++)
+			{
+				char c = text [i];
+				if (colors.ContainsKey (c) && StringNext (text, i) != ' ')
+				{
+					Console.Write (chunk);
+					chunk = "";
+					if (StringNext (text, i) == '(')
+					{
+						i++; // skip past the paren
+						paren = true;
+					}
+					Console.ForegroundColor = colors [c];
+				} else if (paren && c == ')')
+				{
+					paren = false;
+					Console.ForegroundColor = DEFAULT_COLOR;
+				} else if (Console.ForegroundColor != DEFAULT_COLOR)
+				{
+					Console.Write (c);
+					if (c == ' ' && !paren)
+						Console.ForegroundColor = DEFAULT_COLOR;
+				} else
+					chunk += c;
+			}
+			Console.Write (chunk);
+			Console.ForegroundColor = DEFAULT_COLOR;
+		}
+
+		public static void WriteLineColor(string text)
+		{
+			WriteColor (text);
+			Console.WriteLine ();
+		}
+
+		public static char StringPrev(string text, int index)
+		{
+			return (index == 0 || text.Length == 0) ? '\0' : text[index - 1];
+		}
+
+		public static char StringNext(string text, int index)
+		{
+			return (index < text.Length) ? text [index + 1] : '\0';
+		}
 
 		public static void EpicWriteLine(String text, params object[] args)
 		{
 			text = String.Format (text, args);
-			text = StringUtil.Colorize (text);
+			//text = StringUtil.Colorize (text);
 			String[] words = text.Split(' ');
 			StringBuilder buffer = new StringBuilder();
 
@@ -59,7 +119,7 @@ namespace sharpadventure
 				if (buffer.Length >= Console.BufferWidth)
 				{
 					String line = buffer.ToString().Substring(0, buffer.Length - word.Length);
-					Console.WriteLine(line);
+					WriteLineColor(line);
 					buffer.Clear();
 					buffer.Append(word);
 				}
@@ -68,7 +128,7 @@ namespace sharpadventure
 
 			}
 
-			Console.WriteLine(buffer.ToString());
+			WriteLineColor(buffer.ToString());
 		}
 	}
 }
