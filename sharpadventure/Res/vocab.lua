@@ -11,5 +11,7 @@ synonyms = {
 negative = {
 	"jk",
 	"cancel",
-	"nevermind"
+	"nevermind",
+	"none",
+	"no"
 }

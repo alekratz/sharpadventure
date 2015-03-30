@@ -1,6 +1,6 @@
 ﻿require "reactors"
 
-name = "A small room"
+name = "a small room"
 shortname = "small_room"
 description = "This room is very small. There are some #cabinets on the wall."
 exits = { "small_closet", "large_closet" }
@@ -9,13 +9,15 @@ start = true
 fixtures = {
 	{
 		name = "wall",
-		description = "A happy wall, with some #cabinets on it."
+		description = "A happy wall, with some #cabinets on it.",
+		stuck = true
 	},
 
 	{
 		name = "cabinets",
 		state = "locked",
 		state_verb = "are",
+		stuck = true,
 		states = {
 			locked = "A set of sturdy wooden #cabinets. They are locked.",
 			closed = "A set of sturdy wooden #cabinets. They are closed, and unlocked.",

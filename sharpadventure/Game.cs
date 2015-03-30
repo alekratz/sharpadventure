@@ -83,12 +83,12 @@ namespace sharpadventure
 						}
 					}
 					if(matches.Count == 0)
-						EpicWriteLine("There is no room that can be identified by '$({0}').", target);
+						EpicWriteLine("There is no room that can be identified by '$({0})'.", target);
 					else if(matches.Count == 1)
 						GoRoom(matches[0]);
 					else
 					{
-						int choice = ChooseOne(longNames);
+						int choice = ChooseOne(longNames, "$");
 						if(choice < 0)
 							return;
 						GoRoom(matches[choice]);
@@ -167,7 +167,7 @@ namespace sharpadventure
 					}
 				}
 				else
-					EpicWriteLine("Command not found.");
+					EpicWriteLine("There is nothing that you can !({0}) in this room.", splitLine[0]);
 
 			} while(gameState.Running);
 		}
@@ -210,7 +210,7 @@ namespace sharpadventure
 			return commandKeyword;
 		}
 
-		private int ChooseOne(List<string> items)
+		private int ChooseOne(List<string> items, string prefix = "")
 		{
 			string response;
 			int choice;
@@ -218,8 +218,11 @@ namespace sharpadventure
 			{
 				EpicWriteLine ("Which of these did you mean? (negative response to cancel)");
 				foreach(string item in items)
-					EpicWriteLine ("  {0}", item);
-				response = GetLine();
+					EpicWriteLine ((prefix == "") ? " {0}{1}" : " {0}({1})", prefix, item);
+				do
+				{
+					response = GetLine();
+				} while(response == "");
 				if(gameState.NegativeWords.Contains(response))
 				{
 					EpicWriteLine("{0} to you, too.", response);
@@ -233,7 +236,7 @@ namespace sharpadventure
 		{
 			gameState.CurrentRoom = gameState.Rooms [shortName];
 			reactorFixtures = ConstructRoomCommands(gameState.CurrentRoom);
-			EpicWriteLine ("You are in {0}.", gameState.CurrentRoom.Name);
+			EpicWriteLine ("You are in $({0}).", gameState.CurrentRoom.Name);
 		}
 
 		private void PrintExits()

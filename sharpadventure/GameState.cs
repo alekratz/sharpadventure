@@ -131,7 +131,7 @@ namespace sharpadventure
 			Game game = new Game ();
 			game.Run (gameState);
 
-			Console.WriteLine ("bye");
+			Console.WriteLine ("Quitter.");
 		}
 	}
 }

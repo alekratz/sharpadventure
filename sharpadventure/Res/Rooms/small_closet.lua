@@ -6,6 +6,6 @@ exits = { "small_room" }
 fixtures = {
 	{
 		name = "bucket",
-		description = "A boring #bucket. That alliteration was more interesting than this bucket is."
+		description = "A boring #bucket. That alliteration was way more interesting than this bucket is."
 	}
 }
