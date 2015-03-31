@@ -21,7 +21,7 @@ namespace sharpadventure
 
 		public void Printc(string text)
 		{
-			StringUtil.EpicWriteLine (text);
+			StringUtil.WrapWriteLine (text);
 		}
 	}
 }

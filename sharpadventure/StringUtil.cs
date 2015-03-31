@@ -105,7 +105,7 @@ namespace sharpadventure
 			return (index < text.Length) ? text [index + 1] : '\0';
 		}
 
-		public static void EpicWriteLine(String text, params object[] args)
+		public static void WrapWriteLine(String text, params object[] args)
 		{
 			text = String.Format (text, args);
 			//text = StringUtil.Colorize (text);

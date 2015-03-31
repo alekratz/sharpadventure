@@ -144,7 +144,7 @@ namespace sharpadventure
 					// Fixture doesn't have the given action associated with it
 					if(target == null)
 					{
-						EpicWriteLine("You can't !" + commandKeyword + " the #" + target.Name);
+						EpicWriteLine("You can't !(" + commandKeyword + ") the #(" + target.Name + ")");
 						continue;
 					}
 					// Make sure that the reactor isn't null
@@ -255,7 +255,7 @@ namespace sharpadventure
 
 		private static void EpicWriteLine(String text, params object[] args)
 		{
-			StringUtil.EpicWriteLine (text, args);
+			StringUtil.WrapWriteLine (text, args);
 		}
 	}
 }
