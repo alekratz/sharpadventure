@@ -47,7 +47,7 @@ namespace sharpadventure
 			{
 				if(arg.Length == 1)
 				{
-					WrapWriteLine(state.CurrentRoom.Description);
+					WrapWriteLine(state.CurrentRoom.GetResolvedString());
 					PrintExits();
 				}
 				else
@@ -181,8 +181,9 @@ namespace sharpadventure
 		{
 			Dictionary<string, List<Fixture>> commands = new Dictionary<string, List<Fixture>> ();
 			// iterate over all fixtures in the room
-			foreach(Fixture fixture in room.Fixtures)
+			foreach(KeyValuePair<string, Fixture> kvp in room.Fixtures)
 			{
+				Fixture fixture = kvp.Value;
 				// iterate over all reactors that affect this fixture
 				foreach(string command in fixture.Reactors.Keys)
 				{

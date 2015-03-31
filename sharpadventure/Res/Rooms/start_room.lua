@@ -2,17 +2,11 @@
 
 name = "a small room"
 shortname = "small_room"
-description = "This room is very small. There are some #cabinets on the wall."
+description = "This room is very small. There are some { fixtures.cabinets.State } #cabinets on the wall."
 exits = { "small_closet", "large_closet" }
 start = true
 
 fixtures = {
-	{
-		name = "wall",
-		description = "A happy wall, with some #cabinets on it.",
-		stuck = true
-	},
-
 	{
 		name = "cabinets",
 		state = "locked",
@@ -30,5 +24,11 @@ fixtures = {
 			UNLOCK = unlock_reactor,
 			BASH = function(state, owner, args) print("These cabinets are not suitable for destroying. Trust me.") end
 		}
+	},
+
+	{
+		name = "wall",
+		description = "A happy wall, with some #cabinets on it.",
+		stuck = true
 	}
 }

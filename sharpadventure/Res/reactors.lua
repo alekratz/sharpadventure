@@ -44,6 +44,6 @@ end
 
 function bash_reactor_template(bash_string)
   return function(state, owner, args)
-  	util:Printc(bash_string)
+  	StringUtil.WrapWriteLine(bash_string)
   end
 end

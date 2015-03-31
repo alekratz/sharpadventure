@@ -14,11 +14,6 @@ namespace sharpadventure
 		public Dictionary<string, Room> Rooms { get; set; }
 		public Room CurrentRoom { get; set; }
 		public bool Running { get; set; }
-		/// <summary>
-		/// Read-only list of reactors available to the game.
-		/// </summary>
-		/// <value>The list of reactors.</value>
-		public ReactorList Reactors { get; private set; }
 
 		public GameState(string resourceDirectory)
 		{
@@ -27,7 +22,6 @@ namespace sharpadventure
 			Synonyms = new Dictionary<string, HashSet<string>> ();
 			Rooms = new Dictionary<string, Room> ();
 			CurrentRoom = null;
-			Reactors = new ReactorList ();
 			//ReactorsState = new Lua ();
 			LoadGame (resourceDirectory);
 		}
@@ -82,7 +76,7 @@ namespace sharpadventure
 			foreach(string roomPath in Directory.EnumerateFiles(roomsPath))
 			{
 				//Room rm = new Room(roomPath);
-				Room rm = Room.Load (resourceDirectory, roomPath, Reactors);
+				Room rm = Room.Load (resourceDirectory, roomPath);
 				Rooms.Add (rm.ShortName, rm);
 			}
 
