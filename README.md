@@ -29,7 +29,7 @@ http://www.mediafire.com/download/dqz9ahwvi6amyhn/liblua52.so
 
 If this doesn't solve it for you, read on. The problem that you're most likely running into is NLua trying to make an external library call to `luanet_pushwstring`. NLua comes with its own distribution of the Lua library, with some .NET utlities and function calls built in to make things run a little smoother between the two frameworks. Basically, the `luanet_pushwstring` is a Windows utility, and `luanet_pushlstring` is a Linux utility. The NuGet packages pull the Windows version of the DLL, which has a compile-time directive to call either `luanet_pushlstring` or `luanet_pushwstring`... However, those are _compile_ time, and not runtime.
 
-tl;dr, build LuaNet and install it yourself on Linux if you run into this problem.
+*tl;dr*, build LuaNet and install it yourself on Linux if you run into this problem.
 
 Copyright
 =
