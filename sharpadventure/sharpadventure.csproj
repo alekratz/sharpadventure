@@ -33,10 +33,10 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="KeraLua">
-      <HintPath>..\packages\NLua.1.3.2.1\lib\net45\KeraLua.dll</HintPath>
+      <HintPath>..\KeraLua.dll</HintPath>
     </Reference>
     <Reference Include="NLua">
-      <HintPath>..\packages\NLua.1.3.2.1\lib\net45\NLua.dll</HintPath>
+      <HintPath>..\NLua.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -48,28 +48,27 @@
     <Compile Include="Game.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Reactor.cs" />
     <Compile Include="LuaUtil.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Content Include="Res\Rooms\start_room.lua">
+    <Content Include="Res\Example\Rooms\large_closet.lua">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Res\reactors.lua">
+    <Content Include="Res\Example\Rooms\small_closet.lua">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Res\vocab.lua">
+    <Content Include="Res\Example\Rooms\start_room.lua">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Res\Rooms\small_closet.lua">
+    <Content Include="Res\Example\reactors.lua">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Res\Rooms\large_closet.lua">
+    <Content Include="Res\Example\vocab.lua">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <Folder Include="Res\Example\" />
   </ItemGroup>
 </Project>
