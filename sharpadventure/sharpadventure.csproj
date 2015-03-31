@@ -70,5 +70,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Res\Example\" />
+    <Folder Include="Res\Demo\" />
   </ItemGroup>
 </Project>

@@ -13,6 +13,7 @@ namespace sharpadventure
 
 		public Dictionary<string, Room> Rooms { get; set; }
 		public Room CurrentRoom { get; set; }
+		public List<Fixture> Inventory { get; set; }
 		public bool Running { get; set; }
 
 		public GameState(string resourceDirectory)
@@ -22,7 +23,7 @@ namespace sharpadventure
 			Synonyms = new Dictionary<string, HashSet<string>> ();
 			Rooms = new Dictionary<string, Room> ();
 			CurrentRoom = null;
-			//ReactorsState = new Lua ();
+			Inventory = new List<Fixture> ();
 			LoadGame (resourceDirectory);
 		}
 

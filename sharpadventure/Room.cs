@@ -51,7 +51,11 @@ namespace sharpadventure
 			return str.ToString();
 		}
 
-		public string GetResolvedString()
+		/// <summary>
+		/// Gets the resolved version of the description for the room. Resolves any variable references.
+		/// </summary>
+		/// <returns>The resolved description.</returns>
+		public string GetResolvedDescription()
 		{
 			return ResolveString (Description);
 		}

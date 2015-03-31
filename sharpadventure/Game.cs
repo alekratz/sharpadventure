@@ -47,7 +47,7 @@ namespace sharpadventure
 			{
 				if(arg.Length == 1)
 				{
-					WrapWriteLine(state.CurrentRoom.GetResolvedString());
+					WrapWriteLine(state.CurrentRoom.GetResolvedDescription());
 					PrintExits();
 				}
 				else
