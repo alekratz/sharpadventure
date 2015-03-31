@@ -199,7 +199,7 @@ namespace sharpadventure
 		private string GetBestCommand(string commandKeyword)
 		{
 			// go through each entry in the vocabulary, and check if it's a part of that
-			foreach(KeyValuePair<string, HashSet<string>> kvp in gameState.Synonyms)
+			foreach(KeyValuePair<string, HashSet<string>> kvp in gameState.Vocab.Synonyms)
 			{
 				var command = kvp.Key;
 				if (command == commandKeyword)
@@ -224,7 +224,7 @@ namespace sharpadventure
 				{
 					response = GetLine();
 				} while(response == "");
-				if(gameState.NegativeWords.Contains(response))
+				if(gameState.Vocab.NegativeWords.Contains(response))
 				{
 					WrapWriteLine("{0} to you, too.", response);
 					return -1;

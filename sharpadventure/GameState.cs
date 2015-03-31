@@ -8,9 +8,7 @@ namespace sharpadventure
 {
 	public class GameState
 	{
-		public HashSet<string> NegativeWords { get; private set; }
-		public Dictionary<string, HashSet<string>> Synonyms { get; private set; }
-
+		public Vocabulary Vocab { get; private set; }
 		public Dictionary<string, Room> Rooms { get; set; }
 		public Room CurrentRoom { get; set; }
 		public List<Fixture> Inventory { get; set; }
@@ -19,8 +17,7 @@ namespace sharpadventure
 		public GameState(string resourceDirectory)
 		{
 			Running = true;
-			NegativeWords = new HashSet<string> ();
-			Synonyms = new Dictionary<string, HashSet<string>> ();
+			Vocab = new Vocabulary ();
 			Rooms = new Dictionary<string, Room> ();
 			CurrentRoom = null;
 			Inventory = new List<Fixture> ();
@@ -29,49 +26,20 @@ namespace sharpadventure
 
 		private void LoadGame(string resourceDirectory)
 		{
-			string reactorsPath = Path.Combine (resourceDirectory, "reactors.lua");
+			//string reactorsPath = Path.Combine (resourceDirectory, "reactors.lua");
 			string vocabPath = Path.Combine (resourceDirectory, "vocab.lua");
 			string roomsPath = Path.Combine (resourceDirectory, "Rooms");
 
 			// make sure that there exist reactors.lua and rooms/ as well
-			if(!File.Exists(reactorsPath))
+			if(!File.Exists(vocabPath))
 				throw new Exception("Specified directory requires vocab.lua file (not found)");
-			if(!File.Exists(reactorsPath))
-				throw new Exception("Specified directory requires reactors.lua file (not found)");
+			//if(!File.Exists(reactorsPath))
+			//	throw new Exception("Specified directory requires reactors.lua file (not found)");
 			if(!Directory.Exists(roomsPath))
 				throw new Exception ("Specified directory requires rooms/ subdirectory (not found)");
 
 			// Load all of the vocabularies
-			{
-				Lua vocabState = new Lua ();
-				vocabState.DoFile (vocabPath);
-				// Get synonyms
-				if (vocabState ["synonyms"] as LuaTable == null)
-					Console.WriteLine ("WARNING: Synonyms table not found in vocab.lua. Vocabulary for actions will be restricted.");
-				else
-				{
-					foreach (KeyValuePair<object, object> synPair in vocabState["synonyms"] as LuaTable)
-					{
-						string command = synPair.Key as string;
-						LuaTable synonymsTable = synPair.Value as LuaTable;
-						if (synonymsTable == null)
-							continue;
-						HashSet<string> synonyms = new HashSet<string> ();
-						foreach (KeyValuePair<object, object> kvp in synonymsTable)
-							synonyms.Add (kvp.Value as string);
-
-						Synonyms.Add (command, synonyms);
-					}
-				}
-
-				if (vocabState ["negative"] as LuaTable == null)
-					Console.WriteLine ("WARNING: Negative table not found in vocab.lua.");
-				else
-				{
-					foreach(KeyValuePair<object, object> negPair in vocabState["negative"] as LuaTable)
-						NegativeWords.Add (negPair.Value as string);
-				}
-			}
+			Vocab.Load (vocabPath);
 
 			// Load all of the rooms
 			foreach(string roomPath in Directory.EnumerateFiles(roomsPath))
