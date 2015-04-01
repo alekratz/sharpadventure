@@ -34,3 +34,5 @@ If this doesn't solve it for you, read on. The problem that you're most likely r
 Copyright
 =
 GPL v2
+
+This does not apply to games/levels you make. That is not a case of deriving this work, but rather, using this work. You are free to license those however you want, because you made them.
