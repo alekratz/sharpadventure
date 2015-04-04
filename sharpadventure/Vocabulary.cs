@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using NLua;
 
@@ -6,6 +7,7 @@ namespace sharpadventure
 {
 	public class Vocabulary
 	{
+		public HashSet<string> Throwaways { get; private set; }
 		public HashSet<string> NegativeWords { get; private set; }
 		public Dictionary<string, HashSet<string>> Synonyms { get; private set; }
 
@@ -15,6 +17,7 @@ namespace sharpadventure
 		/// <param name="scriptPath">Path to the vocab.lua for the game.</param>
 		public Vocabulary ()
 		{
+			Throwaways = new HashSet<string> ();
 			NegativeWords = new HashSet<string> ();
 			Synonyms = new Dictionary<string, HashSet<string>> ();
 
@@ -48,6 +51,14 @@ namespace sharpadventure
 				}
 			}
 
+			if (state ["throwaway"] as LuaTable == null)
+				Console.WriteLine ("WARNING: Throwaway table not found in vocab.lua.");
+			else
+			{
+				foreach(KeyValuePair<object, object> throwawayPair in state["throwaway"] as LuaTable)
+					Throwaways.Add (throwawayPair.Value as string);
+			}
+
 			if (state ["negative"] as LuaTable == null)
 				Console.WriteLine ("WARNING: Negative table not found in vocab.lua.");
 			else
@@ -55,6 +66,45 @@ namespace sharpadventure
 				foreach(KeyValuePair<object, object> negPair in state["negative"] as LuaTable)
 					NegativeWords.Add (negPair.Value as string);
 			}
+		}
+
+		/// <summary>
+		/// Removes ther throwaway words from a string array, but only at the beginning and end as they appear.
+		/// </summary>
+		/// <param name="args">The arguments to trim from.</param>
+		/// <param name="startIndex">The optional index to start at. Default is 0.</param>
+		/// <returns>The string array without the throwaways at the beginning/end.</returns>
+		public string[] TrimThrowaways(string[] args, int startIndex = 0)
+		{
+			// trim beginning
+			int start = startIndex; // start/end indices
+			for (; start < args.Length && Throwaways.Contains (args [start]); start++)
+				;
+			int end = args.Length - 1;
+			for (; Throwaways.Contains (args [end]); end++)
+				;
+			// trim the array
+			return args.SelectMany ((str, x) => (x < start || x > end) ? new string[0] : new string[] { str }).ToArray();
+		}
+
+		/// <summary>
+		/// Selects the best synonym for the given word.
+		/// </summary>
+		/// <param name="word">The word to check synonyms against. This should be in upper case.</param>
+		/// <returns>The synonym found, if there exists one; otherwise, the original word.</returns>
+		public string GetSynonym(string word)
+		{
+			// go through each entry in the vocabulary, and check if it's a part of that
+			foreach(KeyValuePair<string, HashSet<string>> kvp in Synonyms)
+			{
+				var command = kvp.Key;
+				if (command == word)
+					return word;
+				var syns = kvp.Value;
+				if (syns.Contains (word))
+					return command;
+			}
+			return word;
 		}
 	}
 }

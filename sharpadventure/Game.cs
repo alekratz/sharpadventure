@@ -38,14 +38,11 @@ namespace sharpadventure
 				WrapWriteLine("Or, if you ran into a locked #chest, you could either try your luck to !pick the lock, or just !bash it open.");
 			});
 			PredefinedCommands.Add("EXIT",
-				(state, arg) =>
-			{
-				state.Running = false;
-			});
+				(state, arg) => state.Running = false );
 			PredefinedCommands.Add ("LOOK",
-				(state, arg) =>
+				(state, args) =>
 			{
-				if(arg.Length == 1)
+				if(args.Length == 0 || args[0] == "room" || args[0] == "around")
 				{
 					WrapWriteLine(state.CurrentRoom.GetResolvedDescription());
 					PrintExits();
@@ -53,9 +50,9 @@ namespace sharpadventure
 				else
 				{
 					// TODO : hash search for the items
-					Fixture fix = state.CurrentRoom.GetFixture(string.Join(" ", arg[1]));
+					Fixture fix = state.CurrentRoom.GetFixture(string.Join(" ", args));
 					if(fix == null)
-						WrapWriteLine("You strain your eyes looking for the {0} in the room, but it doesn't seem to exist.", arg[1]);
+						WrapWriteLine("You strain your eyes looking for the {0} in the room, but it doesn't seem to exist.", args[0]);
 					else
 						WrapWriteLine(fix.Description);
 				}
@@ -63,14 +60,14 @@ namespace sharpadventure
 			PredefinedCommands.Add("GO",
 				(state, arg) =>
 			{
-				if(arg.Length == 1)
+				if(arg.Length == 0)
 				{
 					WrapWriteLine("Where would you like to go?");
 					PrintExits();
 				}
 				else
 				{
-					string target = String.Join(" ", arg, 1, arg.Length - 1).ToLower();
+					string target = string.Join(" ", arg).ToLower();
 					// otherwise, make the string and check it against all exit names, and find which one the user meant
 					List<string> matches = new List<string>();
 					List<string> longNames = new List<string>();
@@ -113,23 +110,24 @@ namespace sharpadventure
 				} while (line.Length == 0);
 
 				string[] splitLine = line.Split(' ');
+				string[] args = gameState.Vocab.TrimThrowaways(splitLine, 1);
 				// go through synonyms that are available
-				string commandKeyword = GetBestCommand(splitLine[0].ToUpper());
+				string commandKeyword = gameState.Vocab.GetSynonym(splitLine[0].ToUpper());
 
 				if(PredefinedCommands.ContainsKey(commandKeyword))
-					PredefinedCommands[commandKeyword](gameState, splitLine);
+					PredefinedCommands[commandKeyword](gameState, args);
 				else if(reactorFixtures.ContainsKey(commandKeyword))
 				{
-					if(splitLine.Length == 1)
+					if(args.Length == 0)
 					{
-						WrapWriteLine("What do you wish to !" + commandKeyword + "?");
+						WrapWriteLine("What do you wish to !" + splitLine[0] + "?");
 						continue;
 					}
 
 					List<Fixture> fixList = reactorFixtures[commandKeyword];
 					// Get the name of the first argument, aka the target
 					// TODO : multiword targets
-					string targetName = splitLine[1];
+					string targetName = args[0];
 
 					// fixture doesn't exist in the room
 					if(gameState.CurrentRoom.GetFixture(targetName) == null)
@@ -159,11 +157,11 @@ namespace sharpadventure
 					*/
 					try
 					{
-						reactor.Call(gameState, target, splitLine);
+						reactor.Call(gameState, target, args);
 					}
 					catch(NLua.Exceptions.LuaScriptException ex)
 					{
-						WrapWriteLine("ERROR in room {0}: {1}", gameState.CurrentRoom.ShortName, ex.Message);
+						WrapWriteLine("ERROR LUA in room {0}: {1}", gameState.CurrentRoom.ShortName, ex.Message);
 					}
 				}
 				else
@@ -194,21 +192,6 @@ namespace sharpadventure
 				}
 			}
 			return commands;
-		}
-
-		private string GetBestCommand(string commandKeyword)
-		{
-			// go through each entry in the vocabulary, and check if it's a part of that
-			foreach(KeyValuePair<string, HashSet<string>> kvp in gameState.Vocab.Synonyms)
-			{
-				var command = kvp.Key;
-				if (command == commandKeyword)
-					return commandKeyword;
-				var syns = kvp.Value;
-				if (syns.Contains (commandKeyword))
-					return command;
-			}
-			return commandKeyword;
 		}
 
 		private int ChooseOne(List<string> items, string prefix = "")
@@ -248,6 +231,7 @@ namespace sharpadventure
 				WrapWriteLine ("{0}) $({1})", index++, gameState.Rooms [shortName].Name);
 		}
 
+		#region Static methods
 		private static string GetLine()
 		{
 			StringUtil.WriteColor(" !>> ");
@@ -258,5 +242,6 @@ namespace sharpadventure
 		{
 			StringUtil.WrapWriteLine (text, args);
 		}
+		#endregion
 	}
 }
