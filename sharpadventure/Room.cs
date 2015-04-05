@@ -86,7 +86,7 @@ namespace sharpadventure
 			Room rm = new Room (state);
 			// add the path to the "standard" functions to the package path search
 			rm.State["package.path"] += ";" + resourceDirectory + "/?.lua";
-			rm.State ["util"] = LuaUtil.Instance;
+			//rm.State ["util"] = LuaUtil.Instance;
 			rm.State.LoadCLRPackage ();
 			rm.State.DoString ("import('sharpadventure')");
 

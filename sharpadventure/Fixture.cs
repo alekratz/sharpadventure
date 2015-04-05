@@ -14,6 +14,11 @@ namespace sharpadventure
 		public string State { get; set; }
 		public string StateVerb { get; set; }
 		public string Pronoun { get; set; }
+		/// <summary>
+		/// Text that is displayed when you (attempt) to take this fixture from the room.
+		/// </summary>
+		/// <value>The take text.</value>
+		public string TakeText { get; set; }
 		public bool Stuck { get; set; }
 		/// <summary>
 		/// Whether or not this fixture has been seen.
@@ -79,6 +84,7 @@ namespace sharpadventure
 			fixture.InlineDescription = (table["inline"] as string != null) ? table ["inline"] as string : "";
 			fixture.StateVerb = (table ["state_verb"] as string != null) 	? table ["state_verb"] as string : "is";
 			fixture.Pronoun = (table ["pronoun"] as string != null)		 	? table ["pronoun"] as string : "it";
+			fixture.TakeText = (table ["taketext"] as string != null)		? table ["taketext"] as string : "";
 			fixture.Extra = table ["extra"] as LuaTable;
 			fixture.Stuck = (table ["stuck"] != null) 						? (bool)table ["stuck"] : false; // by default, a fixture is not "stuck", e.g., it can be removed from the room and put in player inventory.
 			if (table ["state"] as string != null)

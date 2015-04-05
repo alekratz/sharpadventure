@@ -107,13 +107,21 @@ namespace sharpadventure
 					{
 						var fix = state.CurrentRoom.Fixtures[target];
 						if(fix.Stuck)
-							WrapWriteLine("The #({0}) {1} apparently fixed to the room; you cannot move or remove {2}. Alas, try something else.", target, fix.StateVerb, fix.Pronoun);
+						{
+							if(fix.TakeText == "")
+								WrapWriteLine("The #({0}) {1} fixed to the room; you cannot move or remove {2}. Alas, try something else.", target, fix.StateVerb, fix.Pronoun);
+							else
+								WrapWriteLine(fix.TakeText);
+						}
 						else
 						{
 							// remove the fixture from the room and put it in the player's inventory}
 							state.CurrentRoom.Fixtures.Remove(target);
 							state.Inventory.Add(fix);
-							WrapWriteLine("You grab the #({0}) and put {1} in your pocket.", target, fix.Pronoun);
+							if(fix.TakeText == "")
+								WrapWriteLine("You grab the #({0}) and put {1} in your backpack.", target, fix.Pronoun);
+							else
+								WrapWriteLine(fix.TakeText);
 						}
 					}
 				}
@@ -154,7 +162,7 @@ namespace sharpadventure
 					List<Fixture> fixList = reactorFixtures[commandKeyword];
 					// Get the name of the first argument, aka the target
 					// TODO : multiword targets
-					string targetName = args[0];
+					string targetName = string.Join(" ", args);
 
 					// fixture doesn't exist in the room
 					if(gameState.CurrentRoom.GetFixture(targetName) == null)
@@ -169,7 +177,7 @@ namespace sharpadventure
 					// Fixture doesn't have the given action associated with it
 					if(target == null)
 					{
-						WrapWriteLine("You can't !(" + commandKeyword + ") the #(" + target.Name + ")");
+						WrapWriteLine("You can't !(" + commandKeyword + ") the #(" + targetName + ")");
 						continue;
 					}
 					// Make sure that the reactor isn't null

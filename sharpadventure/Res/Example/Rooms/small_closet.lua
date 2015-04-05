@@ -17,6 +17,7 @@ fixtures = {
 			desc = "The floor is ironically dusty and basically disgusting."
 			if room:GetFixture("bucket") ~= nil then desc = desc .. " There is a #bucket on the floor." end
 			desc = desc .. " There is nothing else terribly interesting in this closet, unless you really want some urinal cakes."
-			return desc end
+			return desc end,
+		stuck = true
 	}
 }
