@@ -43,7 +43,8 @@ namespace sharpadventure
 
 		public override string ToString ()
 		{
-			return string.Format ("[Fixture: Name={0}, State={1}, StateVerb={2}, Description={3}, Reactors={4}, States={5}]", Name, State, StateVerb, Description, Reactors, States);
+			//string.Format ("[Fixture: Name={0}, State={1}, StateVerb={2}, Description={3}, Reactors={4}, States={5}]", Name, State, StateVerb, Description, Reactors, States);
+			return (Seen) ? string.Format ("{0} {1}", InlineDescription, Name) : Name;
 		}
 
 		public static Fixture FromLuaTable(LuaTable table)
