@@ -49,11 +49,11 @@ namespace sharpadventure
 		public static Fixture FromLuaTable(LuaTable table)
 		{
 			Fixture fixture = new Fixture ();
-			fixture.Name = table ["name"] as string;
-			if (table ["description"] as string != null)
-				fixture.Description = table ["description"] as string;
-			fixture.StateVerb = (table ["state_verb"] as string != null) ? table ["state_verb"] as string : "is";
-			fixture.Stuck = (table ["stuck"] != null) ? (bool)table ["stuck"] : true; // by default, a fixture is "stuck", e.g., it cannot be removed from the room.
+			fixture.Name = table ["name"] as string; // required
+			fixture.Description = (table ["description"] as string != null) ? table ["description"] as string : "";
+			fixture.InlineDescription = (table["inline"] as string != null) ? table ["inline"] as string : "";
+			fixture.StateVerb = (table ["state_verb"] as string != null) 	? table ["state_verb"] as string : "is";
+			fixture.Stuck = (table ["stuck"] != null) 						? (bool)table ["stuck"] : false; // by default, a fixture is not "stuck", e.g., it can be removed from the room and put in player inventory.
 			if (table ["state"] as string != null)
 				fixture.State = table ["state"] as string;
 			if(table["states"] as LuaTable != null)

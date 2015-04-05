@@ -2,7 +2,7 @@
 
 name = "a small room"
 shortname = "small_room"
-description = "This room is very small. There are some { fixtures.cabinets.State } #cabinets on the wall. How exciting~!"
+description = "This room is very small. There are some { fixtures.cabinets.State } #cabinets on the { fixtures.wall.InlineDescription }wall. How exciting~!"
 exits = { "small_closet", "large_closet" }
 start = true
 
@@ -29,6 +29,7 @@ fixtures = {
 	{
 		name = "wall",
 		description = "A happy wall, with some #cabinets on it.",
+		inline = "happy ",
 		stuck = true
 	}
 }

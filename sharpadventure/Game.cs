@@ -54,7 +54,10 @@ namespace sharpadventure
 					if(fix == null)
 						WrapWriteLine("You strain your eyes looking for the {0} in the room, but it doesn't seem to exist.", args[0]);
 					else
+					{
+						fix.Seen = true;
 						WrapWriteLine(fix.Description);
+					}
 				}
 			});
 			PredefinedCommands.Add("GO",
