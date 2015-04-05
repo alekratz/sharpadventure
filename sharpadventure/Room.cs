@@ -17,7 +17,7 @@ namespace sharpadventure
 		public List<string> Exits { get; private set; }
 		public Dictionary<string, Fixture> Fixtures { get; private set; }
 
-		private Lua state = null;
+		public Lua State { get; private set; }
 
 		public Room(Lua luaState)
 		{
@@ -27,7 +27,7 @@ namespace sharpadventure
 			Exits = new List<string> ();
 			Fixtures = new Dictionary<string, Fixture> ();
 			Start = false;
-			state = luaState;
+			State = luaState;
 		}
 
 		public Fixture GetFixture(string fixtureName)
@@ -72,7 +72,7 @@ namespace sharpadventure
 			foreach(Match m in matches)
 			{
 				string matchStr = m.Groups [1].ToString ();
-				string varValue = (state [matchStr] != null) ? state [matchStr].ToString() : "nil";
+				string varValue = (State [matchStr] != null) ? State [matchStr].ToString() : "";
 				result += text.Substring (lastIndex, m.Index - lastIndex) + varValue;
 				lastIndex = m.Index + m.Length;
 			}
@@ -85,26 +85,26 @@ namespace sharpadventure
 			Lua state = new Lua ();
 			Room rm = new Room (state);
 			// add the path to the "standard" functions to the package path search
-			rm.state["package.path"] += ";" + resourceDirectory + "/?.lua";
-			rm.state ["util"] = LuaUtil.Instance;
-			rm.state.LoadCLRPackage ();
-			rm.state.DoString ("import('sharpadventure')");
+			rm.State["package.path"] += ";" + resourceDirectory + "/?.lua";
+			rm.State ["util"] = LuaUtil.Instance;
+			rm.State.LoadCLRPackage ();
+			rm.State.DoString ("import('sharpadventure')");
 
-			rm.state.DoFile (path);
+			rm.State.DoFile (path);
 
 			rm.Name = state ["name"] as string;
 			rm.ShortName = state ["shortname"] as string;
 			rm.Description = state ["description"] as string;
-			if (rm.state ["exits"] as LuaTable != null)
+			if (rm.State ["exits"] as LuaTable != null)
 			{
-				foreach (KeyValuePair<object, object> kvp in (rm.state["exits"] as LuaTable))
+				foreach (KeyValuePair<object, object> kvp in (rm.State["exits"] as LuaTable))
 				{
 					string exit = kvp.Value as string;
 					rm.Exits.Add (exit);
 				}
 			}
-			rm.Start = (rm.state ["start"] == null) ? false : (bool)rm.state ["start"];
-			LuaTable luaFixtures = rm.state["fixtures"] as LuaTable;
+			rm.Start = (rm.State ["start"] == null) ? false : (bool)rm.State ["start"];
+			LuaTable luaFixtures = rm.State["fixtures"] as LuaTable;
 			if(luaFixtures != null)
 			{
 				foreach (KeyValuePair<object, object> kvp in luaFixtures)
@@ -112,7 +112,7 @@ namespace sharpadventure
 					Fixture fix = Fixture.FromLuaTable (kvp.Value as LuaTable);
 					rm.Fixtures.Add (fix.Name, fix);
 				}
-				rm.state ["fixtures"] = rm.Fixtures;
+				rm.State ["fixtures"] = rm.Fixtures;
 			}
 
 			return rm;

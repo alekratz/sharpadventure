@@ -11,6 +11,7 @@ fixtures = {
 		name = "cabinets",
 		state = "locked",
 		state_verb = "are",
+		pronoun = "them",
 		stuck = true,
 		states = {
 			locked = "A set of sturdy wooden #cabinets. They are locked.",

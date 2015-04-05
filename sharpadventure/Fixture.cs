@@ -8,10 +8,12 @@ namespace sharpadventure
 	{
 		private string description = "";
 		private string inlineDescription = "";
+		private LuaFunction descriptionFunction = null;
 
 		public string Name { get; set; }
 		public string State { get; set; }
 		public string StateVerb { get; set; }
+		public string Pronoun { get; set; }
 		public bool Stuck { get; set; }
 		/// <summary>
 		/// Whether or not this fixture has been seen.
@@ -27,11 +29,20 @@ namespace sharpadventure
 			get { return (Seen) ? inlineDescription : ""; } 
 			set { inlineDescription = value; } 
 		}
+		/// <summary>
+		/// The description that is used when directly looking at the fixture.
+		/// </summary>
+		/// <value>The description.</value>
 		public string Description
 		{ 
-			get { return (description == "") ? States [State] : description; }
-			set { description = value; }
+			get { return description; }
+			set {  description = value; }
 		}
+		/// <summary>
+		/// Extra, script-specific values.
+		/// </summary>
+		/// <value>The extra values specified by the script in the form of a LuaTable These are not used by the engine.</value>
+		public LuaTable Extra { get; set; }
 		public Dictionary<string, LuaFunction> Reactors { get; set; }
 		public Dictionary<string, string> States { get; set; }
 
@@ -39,6 +50,14 @@ namespace sharpadventure
 		{
 			States = new Dictionary<string, string> ();
 			Reactors = new Dictionary<string, LuaFunction> ();
+		}
+
+		public string GetDescription(GameState state)
+		{
+			if (descriptionFunction != null)
+				return descriptionFunction.Call (state) [0] as string;
+			else
+				return (description == "") ? States [State] : description; 
 		}
 
 		public override string ToString ()
@@ -51,9 +70,16 @@ namespace sharpadventure
 		{
 			Fixture fixture = new Fixture ();
 			fixture.Name = table ["name"] as string; // required
-			fixture.Description = (table ["description"] as string != null) ? table ["description"] as string : "";
+			// description may be a function
+			if (table ["description"] as LuaFunction != null)
+				fixture.descriptionFunction = table ["description"] as LuaFunction;
+			else
+				fixture.description = (table ["description"] as string != null) ? table ["description"] as string : "";
+
 			fixture.InlineDescription = (table["inline"] as string != null) ? table ["inline"] as string : "";
 			fixture.StateVerb = (table ["state_verb"] as string != null) 	? table ["state_verb"] as string : "is";
+			fixture.Pronoun = (table ["pronoun"] as string != null)		 	? table ["pronoun"] as string : "it";
+			fixture.Extra = table ["extra"] as LuaTable;
 			fixture.Stuck = (table ["stuck"] != null) 						? (bool)table ["stuck"] : false; // by default, a fixture is not "stuck", e.g., it can be removed from the room and put in player inventory.
 			if (table ["state"] as string != null)
 				fixture.State = table ["state"] as string;
