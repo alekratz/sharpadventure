@@ -57,13 +57,21 @@ namespace sharpadventure
 				{ '#', ConsoleColor.Green },
 				{ '$', ConsoleColor.Magenta }
 			};
-			// TODO: word wrap, backslash escapes
+			const char ESCAPE_CHAR = '~';
+
+			// TODO: backslash escapes
 			string chunk = "";
 			bool paren = false;
 			for (int i = 0; i < text.Length; i++)
 			{
-				char c = text [i];
-				if (colors.ContainsKey (c) && StringNext (text, i) != ' ')
+				char c = text [i], 
+					 cnext = StringNext(text, i);
+				if(c == ESCAPE_CHAR && (colors.ContainsKey (cnext) || cnext == ESCAPE_CHAR)) // backslash escapes
+				{
+					chunk += cnext;
+					i++; // skip past the next character
+				}
+				else if (colors.ContainsKey (c) && cnext != ' ')
 				{
 					Console.Write (chunk);
 					chunk = "";
@@ -73,11 +81,13 @@ namespace sharpadventure
 						paren = true;
 					}
 					Console.ForegroundColor = colors [c];
-				} else if (paren && c == ')')
+				}
+				else if (paren && c == ')')
 				{
 					paren = false;
 					Console.ForegroundColor = DEFAULT_COLOR;
-				} else if (Console.ForegroundColor != DEFAULT_COLOR)
+				} 
+				else if (Console.ForegroundColor != DEFAULT_COLOR)
 				{
 					Console.Write (c);
 					if (c == ' ' && !paren)
@@ -102,7 +112,7 @@ namespace sharpadventure
 
 		public static char StringNext(string text, int index)
 		{
-			return (index < text.Length) ? text [index + 1] : '\0';
+			return (index < text.Length - 1) ? text [index + 1] : '\0';
 		}
 
 		public static void WrapWriteLine(String text, params object[] args)

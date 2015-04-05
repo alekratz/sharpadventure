@@ -2,7 +2,7 @@
 
 name = "a small room"
 shortname = "small_room"
-description = "This room is very small. There are some { fixtures.cabinets.State } #cabinets on the wall."
+description = "This room is very small. There are some { fixtures.cabinets.State } #cabinets on the wall. How exciting~!"
 exits = { "small_closet", "large_closet" }
 start = true
 
