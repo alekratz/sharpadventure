@@ -3,10 +3,11 @@ using System.Linq;
 using System.Collections.Generic;
 using NLua;
 
-namespace sharpadventure
+namespace sharpadventure.Language
 {
 	public class Vocabulary
 	{
+		public static Vocabulary Instance { get; private set; }
 		public HashSet<string> Throwaways { get; private set; }
 		public HashSet<string> NegativeWords { get; private set; }
 		public Dictionary<string, HashSet<string>> Synonyms { get; private set; }
@@ -15,7 +16,7 @@ namespace sharpadventure
 		/// Initializes a new instance of the <see cref="sharpadventure.Vocab"/> class.
 		/// </summary>
 		/// <param name="scriptPath">Path to the vocab.lua for the game.</param>
-		public Vocabulary ()
+		private Vocabulary ()
 		{
 			Throwaways = new HashSet<string> ();
 			NegativeWords = new HashSet<string> ();
@@ -28,10 +29,11 @@ namespace sharpadventure
 			return NegativeWords.Contains (word);
 		}
 
-		public void Load(string vocabPath)
+		public static void Load(string vocabPath)
 		{
 			Lua state = new Lua ();
 			state.DoFile (vocabPath);
+			Instance = new Vocabulary ();
 			// Get synonyms
 			if (state ["synonyms"] as LuaTable == null)
 				Console.WriteLine ("WARNING: Synonyms table not found in vocab.lua. Vocabulary for actions will be restricted.");
@@ -47,7 +49,7 @@ namespace sharpadventure
 					foreach (KeyValuePair<object, object> kvp in synonymsTable)
 						synonyms.Add (kvp.Value as string);
 
-					Synonyms.Add (command, synonyms);
+					Instance.Synonyms.Add (command, synonyms);
 				}
 			}
 
@@ -56,7 +58,7 @@ namespace sharpadventure
 			else
 			{
 				foreach(KeyValuePair<object, object> throwawayPair in state["throwaway"] as LuaTable)
-					Throwaways.Add (throwawayPair.Value as string);
+					Instance.Throwaways.Add (throwawayPair.Value as string);
 			}
 
 			if (state ["negative"] as LuaTable == null)
@@ -64,7 +66,7 @@ namespace sharpadventure
 			else
 			{
 				foreach(KeyValuePair<object, object> negPair in state["negative"] as LuaTable)
-					NegativeWords.Add (negPair.Value as string);
+					Instance.NegativeWords.Add (negPair.Value as string);
 			}
 		}
 

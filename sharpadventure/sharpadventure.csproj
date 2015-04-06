@@ -48,7 +48,8 @@
     <Compile Include="Game.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Vocabulary.cs" />
+    <Compile Include="Language\Vocabulary.cs" />
+    <Compile Include="Language\LangUtil.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -81,5 +82,6 @@
     <Folder Include="Res\Example\" />
     <Folder Include="Res\Demo\" />
     <Folder Include="Res\Demo\Rooms\" />
+    <Folder Include="Language\" />
   </ItemGroup>
 </Project>

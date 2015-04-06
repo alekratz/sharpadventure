@@ -3,12 +3,13 @@ using System.Linq;
 using System.Collections.Generic;
 using System.IO;
 using NLua;
+using sharpadventure.Language;
 
 namespace sharpadventure
 {
 	public class GameState
 	{
-		public Vocabulary Vocab { get; private set; }
+		//public Vocabulary Vocab { get; private set; }
 		public Dictionary<string, Room> Rooms { get; set; }
 		public Room CurrentRoom { get; set; }
 		public List<Fixture> Inventory { get; set; }
@@ -17,7 +18,6 @@ namespace sharpadventure
 		public GameState(string resourceDirectory)
 		{
 			Running = true;
-			Vocab = new Vocabulary ();
 			Rooms = new Dictionary<string, Room> ();
 			CurrentRoom = null;
 			Inventory = new List<Fixture> ();
@@ -39,7 +39,7 @@ namespace sharpadventure
 				throw new Exception ("Specified directory requires rooms/ subdirectory (not found)");
 
 			// Load all of the vocabularies
-			Vocab.Load (vocabPath);
+			Vocabulary.Load (vocabPath);
 
 			// Load all of the rooms
 			foreach(string roomPath in Directory.EnumerateFiles(roomsPath))

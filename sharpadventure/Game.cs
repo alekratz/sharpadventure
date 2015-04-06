@@ -4,6 +4,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
 using NLua;
+using sharpadventure.Language;
 
 namespace sharpadventure
 {
@@ -151,9 +152,9 @@ namespace sharpadventure
 				} while (line.Length == 0);
 
 				string[] splitLine = line.Split(' ');
-				string[] args = gameState.Vocab.TrimThrowaways(splitLine, 1);
+				string[] args = Vocabulary.Instance.TrimThrowaways(splitLine, 1);
 				// go through synonyms that are available
-				string commandKeyword = gameState.Vocab.GetSynonym(splitLine[0].ToUpper());
+				string commandKeyword = Vocabulary.Instance.GetSynonym(splitLine[0].ToUpper());
 
 				if(PredefinedCommands.ContainsKey(commandKeyword))
 					PredefinedCommands[commandKeyword](gameState, args);
@@ -252,7 +253,7 @@ namespace sharpadventure
 				{
 					response = GetLine();
 				} while(response == "");
-				if(gameState.Vocab.NegativeWords.Contains(response))
+				if(Vocabulary.Instance.NegativeWords.Contains(response))
 				{
 					WrapWriteLine("{0} to you, too.", response);
 					return -1;
