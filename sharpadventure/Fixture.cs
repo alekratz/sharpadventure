@@ -13,6 +13,11 @@ namespace sharpadventure
 		public string Name { get; set; }
 		public string State { get; set; }
 		public string StateVerb { get; set; }
+		public string Exit { get; set; }
+		/// <summary>
+		/// The pronoun used for this fixture, i.e. "it" or "them"
+		/// </summary>
+		/// <value>The pronoun.</value>
 		public string Pronoun { get; set; }
 		/// <summary>
 		/// Text that is displayed when you (attempt) to take this fixture from the room.
@@ -83,6 +88,7 @@ namespace sharpadventure
 
 			fixture.InlineDescription = (table["inline"] as string != null) ? table ["inline"] as string : "";
 			fixture.StateVerb = (table ["state_verb"] as string != null) 	? table ["state_verb"] as string : "is";
+			fixture.Exit = (table ["exit"] as string != null) 				? table ["exit"] as string : "";
 			fixture.Pronoun = (table ["pronoun"] as string != null)		 	? table ["pronoun"] as string : "it";
 			fixture.TakeText = (table ["taketext"] as string != null)		? table ["taketext"] as string : "";
 			fixture.Extra = table ["extra"] as LuaTable;

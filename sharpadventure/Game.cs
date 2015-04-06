@@ -42,22 +42,28 @@ namespace sharpadventure
 			PredefinedCommands.Add ("LOOK",
 				(state, args) =>
 				{
-					if (args.Length == 0 || args [0] == "room" || args [0] == "around")
+				if (args.Length == 0 || args [0] == "room" || args [0] == "around")
+				{
+					// print the room, and exits
+					WrapWriteLine (state.CurrentRoom.GetResolvedDescription ());
+					PrintExits ();
+				}
+				else if(args[0] == "exits")
+					PrintExits();
+				else if(args[0] == "inv" || args[0] == "inventory")
+					PrintInventory();
+				else
+				{
+					// TODO : hash search for the items
+					Fixture fix = state.CurrentRoom.GetFixture (string.Join (" ", args));
+					if (fix == null)
+						WrapWriteLine ("You strain your eyes looking for the {0} in the room, but it doesn't seem to exist.", args [0]);
+					else
 					{
-						WrapWriteLine (state.CurrentRoom.GetResolvedDescription ());
-						PrintExits ();
-					} else
-					{
-						// TODO : hash search for the items
-						Fixture fix = state.CurrentRoom.GetFixture (string.Join (" ", args));
-						if (fix == null)
-							WrapWriteLine ("You strain your eyes looking for the {0} in the room, but it doesn't seem to exist.", args [0]);
-						else
-						{
-							fix.Seen = true;
-							WrapWriteLine (fix.GetDescription(gameState));
-						}
+						fix.Seen = true;
+						WrapWriteLine (fix.GetDescription(gameState));
 					}
+				}
 				});
 			PredefinedCommands.Add ("GO",
 				(state, args) =>
@@ -264,10 +270,24 @@ namespace sharpadventure
 
 		private void PrintExits()
 		{
-			int index = 1;
-			WrapWriteLine ("Exits:");
-			foreach(string shortName in gameState.CurrentRoom.Exits)
-				WrapWriteLine ("{0}) $({1})", index++, gameState.Rooms [shortName].Name);
+			if (gameState.CurrentRoom.Exits.Count == 0)
+				WrapWriteLine ("There are no visible exits.");
+			else
+			{
+				int index = 1;
+				WrapWriteLine ("Exits:");
+				foreach (string shortName in gameState.CurrentRoom.Exits)
+					WrapWriteLine ("{0}) $({1})", index++, gameState.Rooms [shortName].Name);
+			}
+		}
+
+		private void PrintInventory()
+		{
+			if (gameState.Inventory.Count == 0)
+				WrapWriteLine ("Your inventory is empty.");
+			WrapWriteLine ("Inventory:");
+			foreach(Fixture item in gameState.Inventory)
+				WrapWriteLine ("{0} - {1}", item.Name, item.Description);
 		}
 
 		#region Static methods

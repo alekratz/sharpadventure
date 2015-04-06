@@ -17,24 +17,22 @@ function open_reactor(state, owner, args)
   end
 end
 
-function open_exit_reactor_template(exit)
-  return function(state, owner, args)
-	  assert(exit ~= nil) -- make sure that the exit is defined
-	  room = state.CurrentRoom
-	  if owner.State == "locked" then
-	    StringUtil.WrapWriteLine("The #(" .. owner.Name .. ") " .. owner.StateVerb .. " locked.")
-	  elseif owner.State == "open" then
-	    StringUtil.WrapWriteLine("You feel like a dunce, as the #(" .. owner.Name .. ") " .. owner.StateVerb .. " already open.")
-	  elseif owner.State == "closed" then
-		if not room.Exits:Contains(exit) then
-			-- TODO : get exit long name
-			StringUtil.WrapWriteLine("You open the #(" .. owner.Name .. "), to reveal a new exit: $(" .. exit .. ")")
-			room.Exits:Add(exit)
-		else
-	    	StringUtil.WrapWriteLine("You open the #(" .. owner.Name .. ").")
-	    end
-	    owner.State = "open"
-	  end
+function open_exit_reactor(state, owner, args)
+  assert(owner.Exit ~= "") -- make sure that the exit is defined
+  room = state.CurrentRoom
+  if owner.State == "locked" then
+    StringUtil.WrapWriteLine("The #(" .. owner.Name .. ") " .. owner.StateVerb .. " locked.")
+  elseif owner.State == "open" then
+    StringUtil.WrapWriteLine("You feel like a dunce, as the #(" .. owner.Name .. ") " .. owner.StateVerb .. " already open.")
+  elseif owner.State == "closed" then
+	if not room.Exits:Contains(owner.Exit) then
+		-- TODO : get exit long name
+		StringUtil.WrapWriteLine("You open the #(" .. owner.Name .. "), to reveal a new exit: $(" .. owner.Exit .. ")")
+		room.Exits:Add(owner.Exit)
+	else
+    	StringUtil.WrapWriteLine("You open the #(" .. owner.Name .. ").")
+    end
+    owner.State = "open"
   end
 end
 
