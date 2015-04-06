@@ -6,6 +6,7 @@ description = "There is a { fixtures.door.State } #door on the north end of the 
 			.."on the walls. A{ fixtures.desk.InlineDescription } #desk lines the south wall. There are no windows{ fixtures.vent.InlineDescription }. Your "
 			.."#bed is in the southeast corner next to the #desk."
 start = true
+exits = {}
 
 fixtures = {
 	{
@@ -15,10 +16,11 @@ fixtures = {
 			locked = "The door to and from your room, which appears to be locked."
 		},
 		reactors = {
-			OPEN = open_reactor,
+			OPEN = open_exit_reactor_template("long_hallway"),
 			CLOSE = close_reactor,
 			UNLOCK = unlock_reactor,
-			KNOCK = function(state, owner, args) print("The door does not appear to respond to knocking.") end
+			KNOCK = function(state, owner, args) StringUtil.WrapWriteLine("The door does not appear to respond to knocking.") end,
+			BASH = function(state, owner, args) StringUtil.WrapWriteLine("Attempting to break down the door is not exactly in your best interests. It feels very solid, and if you managed to breach it, the door would not be the only thing you break.") end
 		},
 		stuck = true
 	},

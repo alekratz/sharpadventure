@@ -8,35 +8,56 @@
 function open_reactor(state, owner, args)
   -- Check owner state
   if owner.State == "locked" then
-    StringUtil.WrapWriteLine("The #({0}) {1} locked.", owner.Name, owner.StateVerb)
+    StringUtil.WrapWriteLine("The #(" .. owner.Name .. ") " .. owner.StateVerb .. " locked.")
   elseif owner.State == "open" then
-    StringUtil.WrapWriteLine("You feel like a dunce, as the #({0}) {1} already open.", owner.Name, owner.StateVerb)
+    StringUtil.WrapWriteLine("You feel like a dunce, as the #(" .. owner.Name .. ") " .. owner.StateVerb .. " already open.")
   elseif owner.State == "closed" then
-    StringUtil.WrapWriteLine("You open the #({0})", owner.Name)
+    StringUtil.WrapWriteLine("You open the #(" .. owner.Name .. ").")
     owner.State = "open"
+  end
+end
+
+function open_exit_reactor_template(exit)
+  return function(state, owner, args)
+	  assert(exit ~= nil) -- make sure that the exit is defined
+	  room = state.CurrentRoom
+	  if owner.State == "locked" then
+	    StringUtil.WrapWriteLine("The #(" .. owner.Name .. ") " .. owner.StateVerb .. " locked.")
+	  elseif owner.State == "open" then
+	    StringUtil.WrapWriteLine("You feel like a dunce, as the #(" .. owner.Name .. ") " .. owner.StateVerb .. " already open.")
+	  elseif owner.State == "closed" then
+		if not room.Exits:Contains(exit) then
+			-- TODO : get exit long name
+			StringUtil.WrapWriteLine("You open the #(" .. owner.Name .. "), to reveal a new exit: $(" .. exit .. ")")
+			room.Exits:Add(exit)
+		else
+	    	StringUtil.WrapWriteLine("You open the #(" .. owner.Name .. ").")
+	    end
+	    owner.State = "open"
+	  end
   end
 end
 
 function unlock_reactor(state, owner, args)
   if owner.State == "locked" then
-    --print("The {0} {1} locked. You need to find the proper key.")
-    StringUtil.WrapWriteLine("You manage to unlock the #({0}). Somehow.", owner.Name)
+    --print("The " .. owner.Name .. " " .. owner.StateVerb .. " locked. You need to find the proper key.")
+    StringUtil.WrapWriteLine("You manage to unlock the #(" .. owner.Name .. "). Somehow.")
     owner.State = "closed"
   elseif owner.State == "open" then
-    StringUtil.WrapWriteLine("You feel like a dunce, as the #({0}) {1} already unlocked and wide open.", owner.Name, owner.StateVerb)
+    StringUtil.WrapWriteLine("You feel like a dunce, as the #(" .. owner.Name .. ") " .. owner.StateVerb .. " already unlocked and wide open.")
   elseif owner.State == "closed" then
-    StringUtil.WrapWriteLine("You feel like a dunce, as the #({0}) {1} already unlocked.", owner.Name, owner.StateVerb)
+    StringUtil.WrapWriteLine("You feel like a dunce, as the #(" .. owner.Name .. ") " .. owner.StateVerb .. " already unlocked.")
   end
 end
 
 function close_reactor(state, owner, args)
   if owner.State == "locked" then
-    --print("The {0} {1} locked. You need to find the proper key.")
-    StringUtil.WrapWriteLine("The #({0}) {1} is already locked and closed.", owner.Name, owner.StateVerb)
+    --print("The " .. owner.Name .. " " .. owner.StateVerb .. " locked. You need to find the proper key.")
+    StringUtil.WrapWriteLine("The #(" .. owner.Name .. ") " .. owner.StateVerb .. " is already locked and closed.")
   elseif owner.State == "open" then
-    StringUtil.WrapWriteLine("You close the #({0}).", owner.Name)
+    StringUtil.WrapWriteLine("You close the #(" .. owner.Name .. ").")
   elseif owner.State == "closed" then
-    StringUtil.WrapWriteLine("You feel like a dunce, as the #({0}) {1} already closed.", owner.Name, owner.StateVerb)
+    StringUtil.WrapWriteLine("You feel like a dunce, as the #(" .. owner.Name .. ") " .. owner.StateVerb .. " already closed.")
   end
 end
 

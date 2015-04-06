@@ -190,14 +190,18 @@ namespace sharpadventure
 						continue;
 					}
 					*/
+					#if !DEBUG
 					try
 					{
 						reactor.Call(gameState, target, args);
 					}
 					catch(NLua.Exceptions.LuaScriptException ex)
 					{
-						WrapWriteLine("ERROR LUA in room {0}: {1}", gameState.CurrentRoom.ShortName, ex.Message);
+						WrapWriteLine("ERROR LUA in room {0}: {1} {2}", gameState.CurrentRoom.ShortName, ex.Source, ex.ToString());
 					}
+					#else
+					reactor.Call(gameState, target, args);
+					#endif
 				}
 				else
 					WrapWriteLine("There is nothing that you can !({0}) in this room.", splitLine[0]);

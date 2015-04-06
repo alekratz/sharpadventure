@@ -11,10 +11,10 @@ Right now, a lot of stuff works! Which is a good thing. Here's a list of the stu
 * Rooms, fixtures, etc
 * Setting states of fixtures via Lua
 * String resolution for room variables
+* Player inventory (sort of)
 * A lot of built-in sass
 
 However, there are a few things that need to be added. If they're marked with + then Ya Boy is working on it:
-* +Player inventory
 * Integration of Rant for some sentences at some point (future)
 * +Demo game
 
