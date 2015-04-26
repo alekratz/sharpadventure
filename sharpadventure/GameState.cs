@@ -14,6 +14,7 @@ namespace sharpadventure
 		public Room CurrentRoom { get; set; }
 		public List<Fixture> Inventory { get; set; }
 		public bool Running { get; set; }
+		public ContextReducer Reducer { get; private set; }
 
 		public GameState(string resourceDirectory)
 		{
@@ -22,6 +23,7 @@ namespace sharpadventure
 			CurrentRoom = null;
 			Inventory = new List<Fixture> ();
 			LoadGame (resourceDirectory);
+			Reducer = new ContextReducer (this);
 		}
 
 		private void LoadGame(string resourceDirectory)

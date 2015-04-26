@@ -12,6 +12,7 @@ namespace sharpadventure.Language
 
 		public ContextReducer (GameState state)
 		{
+			State = state;
 		}
 
 		/// <summary>
@@ -37,7 +38,6 @@ namespace sharpadventure.Language
 			// I definitely wrote this with the mentality of switch case, I'll fix it later
 			string[] terms = LangUtil.SplitPrepositions (strippedLine);
 
-			/*
 			if (terms.Length > 2)
 			{
 				target = "";
@@ -53,9 +53,6 @@ namespace sharpadventure.Language
 				target = terms [0];
 				directObject = "";
 			}
-			*/
-			target = (terms.Length >= 2) ? terms [0] : "";
-			directObject = (terms.Length == 2) ? terms [1] : "";
 
 			return new SentenceParts (command, target, directObject);
 		}

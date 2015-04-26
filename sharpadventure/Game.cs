@@ -150,6 +150,7 @@ namespace sharpadventure
 				{
 					line = GetLine();
 				} while (line.Length == 0);
+				//SentenceParts context = state.Reducer.GetContext(line);
 
 				string[] splitLine = line.Split(' ');
 				string[] args = Vocabulary.Instance.TrimThrowaways(splitLine, 1);
