@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Diagnostics;
 
 namespace sharpadventure
 {
@@ -60,7 +59,6 @@ namespace sharpadventure
 			};
 			const char ESCAPE_CHAR = '~';
 
-			// TODO: backslash escapes
 			string chunk = "";
 			bool paren = false;
 			for (int i = 0; i < text.Length; i++)
@@ -142,22 +140,7 @@ namespace sharpadventure
 			WriteLineColor(buffer.ToString());
 		}
 
-		public static string MakeEnglishList(string[] list)
-		{
-			Debug.Assert (list.Length != 0, "MakeEnglishList list should have length of at least 1.");
-			if (list.Length == 1)
-				return list [0];
-			else if (list.Length == 2)
-				return string.Format ("{0} and {1}", list [0], list [1]);
-			else
-			{
-				string result = list[0];
-				for (int i = 1; i < list.Length - 1; i++)
-					result += ", " + list [i];
-				result += ", and " + list.Last ();
-				return result;
-			}
-		}
+
 	}
 }
 

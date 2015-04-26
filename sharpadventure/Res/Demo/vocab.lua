@@ -14,11 +14,23 @@ throwaway = {
 	"a",
 	"an",
 	"the",
+	-- it's a good idea to have prepositions in the throwaways as well
 	"at",
-	"with",  -- maybe get rid of this one? or make a grammatical norm
-	-- ex: 'with' must always be used as an adjective, e.g. beef with broccoli, and not an adverb, e.g. open door with key
-	"inside", -- consider axing thing one too. if it comes up as an object name, then it may be removed.
-	"in"
+	"with",
+	"inside",
+	"outside",
+	"in",
+	"out"
+	-- for example, "look at the door"
+}
+
+preposition = {
+	"at",
+	"with",
+	"inside",
+	"outside",
+	"in",
+	"out"
 }
 
 negative = {

@@ -50,6 +50,8 @@
     </Compile>
     <Compile Include="Language\Vocabulary.cs" />
     <Compile Include="Language\LangUtil.cs" />
+    <Compile Include="Language\SentenceParts.cs" />
+    <Compile Include="Language\ContextReducer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
