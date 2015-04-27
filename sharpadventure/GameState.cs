@@ -41,7 +41,7 @@ namespace sharpadventure
 				throw new Exception ("Specified directory requires rooms/ subdirectory (not found)");
 
 			// Load all of the vocabularies
-			Vocabulary.Load (vocabPath);
+			Vocabulary.LoadInstance (vocabPath);
 
 			// Load all of the rooms
 			foreach(string roomPath in Directory.EnumerateFiles(roomsPath))

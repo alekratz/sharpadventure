@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Diagnostics;
 
 namespace sharpadventure
 {
@@ -106,6 +107,7 @@ namespace sharpadventure
 
 		public static char StringPrev(string text, int index)
 		{
+			Debug.Assert (!(index < 0));
 			return (index == 0 || text.Length == 0) ? '\0' : text[index - 1];
 		}
 
@@ -139,8 +141,7 @@ namespace sharpadventure
 
 			WriteLineColor(buffer.ToString());
 		}
-
-
+			
 	}
 }
 

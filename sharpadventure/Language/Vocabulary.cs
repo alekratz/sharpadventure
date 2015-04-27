@@ -31,7 +31,7 @@ namespace sharpadventure.Language
 			return NegativeWords.Contains (word);
 		}
 
-		public static void Load(string vocabPath)
+		public void Load(string vocabPath)
 		{
 			Lua state = new Lua ();
 			state.DoFile (vocabPath);
@@ -78,6 +78,12 @@ namespace sharpadventure.Language
 				foreach(KeyValuePair<object, object> prepPair in state["preposition"] as LuaTable)
 					Instance.Prepositions.Add (prepPair.Value as string);
 			}
+		}
+
+		public static void LoadInstance(string vocabPath)
+		{
+			Instance = new Vocabulary ();
+			Instance.Load (vocabPath);
 		}
 
 		public string GetSynonym(string word)
