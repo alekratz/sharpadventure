@@ -24,8 +24,8 @@ namespace sharpadventuretest
 		{
 			string testString = "The quick brown fox jumped over the lazy dogs";
 			for (int i = 0; i < testString.Length - 1; i++)
-				Assert.AreEqual (StringUtil.StringPrev (testString, i), testString [i + 1]);
-			Assert.AreEqual (StringUtil.StringPrev (testString, testString.Length - 1), '\0');
+				Assert.AreEqual (StringUtil.StringNext (testString, i), testString [i + 1]);
+			Assert.AreEqual (StringUtil.StringNext (testString, testString.Length - 1), '\0');
 		}
 
 		// that is all I guess

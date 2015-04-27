@@ -45,8 +45,8 @@ namespace sharpadventuretest
 
 			Assert.AreEqual (vocab.GetSynonym ("SHUT"), "CLOSE");
 
-			Assert.AreEqual (vocab.GetSynonym ("GET"), "GRAB");
-			Assert.AreEqual (vocab.GetSynonym ("TAKE"), "GRAB");
+			Assert.AreEqual (vocab.GetSynonym ("GET"), "TAKE");
+			Assert.AreEqual (vocab.GetSynonym ("GRAB"), "TAKE");
 
 			Assert.AreEqual (vocab.GetSynonym ("BREAK"), "BASH");
 			Assert.AreEqual (vocab.GetSynonym ("FORCE"), "BASH");
