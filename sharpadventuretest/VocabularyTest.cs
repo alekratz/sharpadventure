@@ -8,12 +8,17 @@ namespace sharpadventuretest
 	[TestFixture ()]
 	public class VocabularyTest
 	{
+		private Vocabulary vocab;
+
+		public VocabularyTest()
+		{
+			Vocabulary.LoadInstance ("test_vocab.lua");
+			vocab = Vocabulary.Instance;
+		}
+
 		[Test ()]
 		public void TestLoad()
 		{
-			Vocabulary.LoadInstance ("test_vocab.lua");
-			var vocab = Vocabulary.Instance;
-
 			Assert.True (vocab.Prepositions.Contains ("at"));
 			Assert.True (vocab.Prepositions.Contains ("with"));
 			Assert.True (vocab.Prepositions.Contains ("inside"));
@@ -35,9 +40,6 @@ namespace sharpadventuretest
 		[Test ()]
 		public void TestGetSynonym()
 		{
-			Vocabulary.LoadInstance ("test_vocab.lua");
-			var vocab = Vocabulary.Instance;
-
 			Assert.AreEqual (vocab.GetSynonym ("VIEW"), "LOOK");
 			Assert.AreEqual (vocab.GetSynonym ("CHECK"), "LOOK");
 
@@ -57,9 +59,6 @@ namespace sharpadventuretest
 		[Test ()]
 		public void TestTrimThrowaways()
 		{
-			Vocabulary.LoadInstance ("test_vocab.lua");
-			var vocab = Vocabulary.Instance;
-
 			// do this one later
 		}
 	}

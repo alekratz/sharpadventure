@@ -113,6 +113,7 @@ namespace sharpadventure
 
 		public static char StringNext(string text, int index)
 		{
+			Debug.Assert (!(index >= text.Length));
 			return (index < text.Length - 1) ? text [index + 1] : '\0';
 		}
 
