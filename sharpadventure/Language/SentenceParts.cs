@@ -6,17 +6,19 @@ namespace sharpadventure.Language
 	{
 		public string Command { get; private set; }
 		public string Target { get; private set; }
+		public string Preposition { get; private set; }
 		public string DirectObject { get; private set; }
 
-		public SentenceParts(string command, string target, string directObject)
+		public SentenceParts(string command, string target, string preposition, string directObject)
 			: this()
 		{
 			Command = command;
 			Target = target;
+			Preposition = preposition;
 			DirectObject = directObject;
 		}
 
-		public static readonly SentenceParts None = new SentenceParts("", "", "");
+		public static readonly SentenceParts None = new SentenceParts("", "", "", "");
 	}
 }
 

@@ -25,7 +25,7 @@ namespace sharpadventure.Language
 			// If it's not a valid command, return it
 			if (string.IsNullOrEmpty (contextLine) || contextLine.Split (' ').Length == 0)
 				return SentenceParts.None;
-			string command, target, directObject;
+			string command, target, directObject, preposition;
 			// man, I hope this works.
 
 			// get the command and its synonym
@@ -35,27 +35,28 @@ namespace sharpadventure.Language
 			string strippedLine = string.Join (" ", strippedLineParts);
 			// get the number of... things
 			// TODO : add context based on which command we're using
-			// I definitely wrote this with the mentality of switch case, I'll fix it later
 			string[] terms = LangUtil.SplitPrepositions (strippedLine);
 
-			if (terms.Length > 2)
+			if (terms.Length > 3)
 			{
 				target = "";
 				directObject = "";
-			} 
-			else if (terms.Length == 2)
+				preposition = "";
+			}
+			else if (terms.Length == 3)
 			{
 				target = terms [0];
-				directObject = terms [1];
+				preposition = terms [1];
+				directObject = terms [2];
 			} 
 			else
 			{
 				target = terms [0];
 				directObject = "";
+				preposition = "";
 			}
 
-			return new SentenceParts (command, target, directObject);
+			return new SentenceParts (command, target, preposition, directObject);
 		}
 	}
 }
-
