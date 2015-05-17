@@ -8,6 +8,11 @@ namespace sharpadventuretest
 	[TestFixture ()]
 	public class LangUtilTest
 	{
+		public LangUtilTest()
+		{
+			Vocabulary.LoadInstance ("test_vocab.lua"); // load vocab up
+		}
+
 		[Test ()]
 		public void TestMakeEnglishList()
 		{
@@ -30,7 +35,8 @@ namespace sharpadventuretest
 		public void TestSplitPrepositions()
 		{
 			// can't do this one until we add a better way of loading the vocabulary
-			//Assert.AreEqual()
+			Assert.AreEqual (LangUtil.SplitPrepositions ("USE the key with the door"), new string[] { "USE the key", "with", "the door" });
+			Assert.AreEqual (LangUtil.SplitPrepositions ("PUT the key in the door"), new string[] { "PUT the key", "in", "the door" });
 		}
 	}
 }

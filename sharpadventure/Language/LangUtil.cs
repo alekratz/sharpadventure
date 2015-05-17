@@ -35,10 +35,32 @@ namespace sharpadventure.Language
 		{
 			// get the first occurrence of a preposition
 			// TODO : make this better. deduce stuff. figure out possibilities.
+			//			-- maybe not. leave that to the context reducer.
 			// TODO : Maybe move this to the contextreducer to find the /best/ option?
-			// HACK : lol, it just kinda splits things using the prepositions array
-
-			return sentence.Split (VocabInstance.Prepositions.ToArray(), StringSplitOptions.RemoveEmptyEntries);
+			string[] parts = sentence.Split ();
+			List<string> words = new List<string> ();
+			string build = "";
+			foreach(string p in parts)
+			{
+				if(VocabInstance.Prepositions.Contains(p))
+				{
+					// add the last part of the word on
+					if (build != "")
+					{
+						words.Add (build);
+						build = "";
+					}
+					words.Add (p);
+				}
+				else
+				{
+					build += (build == "") ? p : (" " + p);
+				}
+			}
+			// add the last part
+			if(build != "")
+				words.Add (build);
+			return words.ToArray ();
 		}
 
 		public static string MakeEnglishList(string[] list)
