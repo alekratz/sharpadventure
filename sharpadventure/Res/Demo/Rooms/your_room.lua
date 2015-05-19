@@ -11,7 +11,7 @@ exits = {}
 local screwdriver = {
 	name = "screwdriver", 
 	description = "A flathead screwdriver. Fairly useful to have around, just in case.",
-	reactors = { 
+	reactors = {
 		USE = function(state, owner, args) 
 		print(args)
 		end
@@ -37,6 +37,7 @@ fixtures = {
 	},
 	{
 		name = "posters",
+		state_verb = "are",
 		description = "Some posters, all of movies which look severely retro. In fact, you have a hard time distinguishing any of the movies, and you wonder if "
 					.."any of them are for actual movies.",
 		inline = "of some retro movies ",
@@ -52,6 +53,7 @@ fixtures = {
 	},
 	{
 		name = "desk drawers",
+		state_verb = "are",
 		state = "closed",
 		states = {
 			closed = "Some closed drawers that are part of the #(desk).",
@@ -88,6 +90,7 @@ fixtures = {
 	},
 	{
 		name = "windows",
+		state_verb = "are",
 		description = "You look through the window. Wait, no you don't. There's no windows in this room.",
 		taketext = "You cannot take what does not exist.",
 		stuck = true
