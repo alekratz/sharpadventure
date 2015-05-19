@@ -35,6 +35,7 @@ namespace sharpadventure.Language
 			string strippedLine = string.Join (" ", strippedLineParts);
 			// get the number of... things
 			// TODO : add context based on which command we're using
+			// if there is any ambiguity, then find all possibilities, and try to reduce it
 			string[] terms = LangUtil.SplitPrepositions (strippedLine);
 
 			if (terms.Length > 3)
